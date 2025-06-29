@@ -1,3 +1,5 @@
+# DEMO
+
 [![DEMO – Click to Play](README.jpg)](https://bacionejs.github.io/byte-armada/)
 
 # **Byte Armada Instructions**
