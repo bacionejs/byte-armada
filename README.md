@@ -46,7 +46,7 @@ To activate it:
 3. **Copy the text** that appears and send it to your friend via instant messenger.
 4. Your friend (on the **same Wi-Fi network**) should:
    - **Long press** the intro screen.
-   - Choose **Cancel**.
+   - Choose **Cancel** — ⚠️ do **NOT** click OK!
    - **Paste your message** and click **Handshake**.
    - **Copy the response** and send it back to you.
 5. You then **paste their response**, click **Handshake**, and the **PvP game will begin**.
