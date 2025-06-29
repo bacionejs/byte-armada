@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+  <script>
+window.onload = function() {
+document.title="Byte Armada";
+function element(e,p){return (p||document.body).appendChild(document.createElement(e))}
+
+let channel;
+
+intro();
+
+function intro(){
+let timer,before,elements=[];
+let title=element("div"),handshake=element("button"),log=element("textarea");
+handshake.textContent="Handshake";
+log.style.height="90%";log.style.width="90%";
+log.style.display=handshake.style.display="none";
+Object.assign(title.style,{position:"fixed",left:"50%",top:"40%",transform:"translateX(-50%)",fontSize:30,color:"black",textAlign:"center",userSelect:"none"});
+title.textContent="Byte Armada";
+
+function startgame(){elements.forEach(e=>e.remove());[["pointerdown",down],["pointerup",up]].forEach(([t,h])=>removeEventListener(t,h));game();}
+
+function down(){
+before=performance.now();
+timer=setTimeout(()=>{
+  log.style.display=handshake.style.display="";[["pointerdown",down],["pointerup",up]].forEach(([type,handler])=>removeEventListener(type,handler));title.remove();
+  channelsetup({set:txt=>log.value=txt,get:()=>JSON.parse(log.value),handshake:fn=>handshake.onclick=fn,game:startgame});
+},1000);
+};
+
+function up(){clearTimeout(timer);if(performance.now()-before<1000){startgame();}}
+
+addEventListener("pointerdown",down);addEventListener("pointerup",up);
+elements.push(title,log,handshake);
+}//intro
+
+function channelsetup(ui){
+let pc=new RTCPeerConnection(),candidates=[];
+pc.onicecandidate=e=>e.candidate&&candidates.push(e.candidate.toJSON());
+let done=()=>ui.set(JSON.stringify({sdp:pc.localDescription,candidates}));
+let wait=()=>pc.iceGatheringState==="complete"?done():pc.onicegatheringstatechange=()=>pc.iceGatheringState==="complete"&&done();
+let setup=()=>channel.onopen=ui.game;
+if(confirm("Initiate?")){
+  channel=pc.createDataChannel("xxx");setup();
+  pc.createOffer().then(o=>{pc.setLocalDescription(o);wait();});
+  ui.handshake(()=>{let d=ui.get();pc.setRemoteDescription(d.sdp);d.candidates.forEach(c=>pc.addIceCandidate(c));});
+}else{
+  pc.ondatachannel=e=>(channel=e.channel,setup());
+  ui.handshake(()=>{try{let d=ui.get();pc.setRemoteDescription(d.sdp);d.candidates.forEach(c=>pc.addIceCandidate(c));pc.createAnswer().then(a=>{pc.setLocalDescription(a);wait();});}catch{}});
+}
+}
+
+function game(){
+element("style").textContent="*{position:fixed;margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;}body{background:blue;}";
+let {floor,ceil,random,PI,abs,atan2,min}=Math;
+let level=0,W=min(innerWidth,innerHeight),mode=0,p=null,FPS=30,q=5,buckettime=20,energy=100,cooldown=FPS,max=5,health=3,timers=[],scale=((W/q)/(FPS*buckettime));
+let can=element("canvas"),c=can.getContext("2d");can.width=can.height=W;c.canvas.addEventListener("pointerdown",e=>{mode?(mode=0,start(e)):click(e);});
+
+let blue={
+  health,
+  entities:[],laser:"blue",hull:gradient(c,[[0,"white"],[.08,"skyblue"],[.4,"blue"],[.6,"white"]]),
+  shape:shape([[0,-10,2,-1,3,1,3,-2,5,-2,5,2,6,2,10,-1,9,5,3,10,3,7,2,6,2,7,0,7],[0,8,2,8,0,10]],20)
+};
+let red={
+  health,
+  entities:[],laser:"red",hull:gradient(c,[[0,"white"],[.08,"gold"],[.4,"red"],[.6,"white"]]),
+  shape:shape([[0,-5,1,-5,3,2,3,-10,4,-10,4,-7,5,-6,5,-3,6,-2,6,-1,8,0,10,4,6,6,6,7,4,9,4,10,3,10,3,6,2,5,1,6,0,6],[0,7,1,7,0,9]],20)
+}
+
+let celebration;
+reset();
+
+function reset(){
+timers.forEach(clearInterval);timers=[];
+c.fillStyle="black";c.fillRect(0,0,W,W);
+mode=1;
+blue.entities=[];red.entities=[];
+c.strokeStyle="white";
+for(let i=0;i<25;i++){let x=(i%5)*(W/5),y=floor(i/5)*(W/5);c.strokeRect(x,y,W/5,W/5);c.fillStyle="white";c.textAlign="center";c.textBaseline="middle";c.font=W/35+"px monospace";c.fillText("lv"+(i+1),x+W/10,y+W/10);}
+if(blue.health){
+  level++;
+  c.strokeStyle="lime";
+}else{
+  c.strokeStyle="red";
+}
+if(level>25){
+  level=0;
+  celebration=setInterval(()=>{
+    c.fillStyle=`hsl(${Math.random()*360},100%,${50+Math.random()*50}%)`;
+    c.beginPath();
+    for(let i=0;i<100;i++){
+      let x=random()*W,y=Math.random()*W,r=random()*5;
+      c.moveTo(x+r,y);
+      c.arc(x,y,r,0,6.28);
+    }
+    c.fill();
+  },100);
+}
+let x=(level-1)%5*(W/5),y=floor((level-1)/5)*(W/5);c.strokeRect(x,y,W/5,W/5);
+blue.health=red.health=health;
+blue.energy=red.energy=energy;
+}//reset
+
+function start({clientX:x,clientY:y}){
+if(level==0)clearInterval(celebration);
+level=floor(x*5/W)+floor(y*5/W)*5+1;
+red.energy=energy+(level*10);
+if(channel){
+  blue.energy=energy+(level*10);
+}else{
+  bot();timers.push(setInterval(()=>{if(random()<0.8)bot();},5000));
+//bot();timers.push(setInterval(()=>{if(random()<0.8)bot();},1000));
+}
+timers.push(setInterval(update,1000/FPS));
+}
+
+function update(){
+c.fillStyle="black";c.fillRect(0,0,W,W);
+for(let i of [blue,red]){i.entities.forEach(e=>{e.y+=(e.speed*scale);});}
+//for(let e of blue.entities){if(!e.passed&&e.y<(W-5)){e.passed=true;if(--red.health==0){reset();return;}}}
+for(let e of blue.entities){if(!e.passed&&e.y<0){e.passed=true;if(--red.health==0){reset();return;}}}
+//for(let e of red.entities){if(!e.passed&&e.y>5){e.passed=true;if(--blue.health==0){reset();return;}}}
+for(let e of red.entities){if(!e.passed&&e.y>W){e.passed=true;if(--blue.health==0){reset();return;}}}
+for(let i of [blue,red]){i.entities=i.entities.filter(e=>e.hp>0&&e.y>=0&&e.y<=W);}
+c.drawImage(background,0,0);
+for(let i of [blue,red]){c.fillStyle=i.hull;i.entities.forEach(e=>{
+  c.save();c.translate(e.x,e.y);c.rotate(e.angle);let s=(e.hp)*5+5;c.scale(s,s);c.fill(i.shape);c.restore();
+});}
+for(let [attacker,defender] of [[blue,red],[red,blue]]){
+  for(let a of attacker.entities){
+    if(a.cooldown>0){a.cooldown--;continue;}a.cooldown=cooldown;
+    let target=null,best=Infinity,max=(a.range*(W/q))**2;
+    for(let d of defender.entities){
+      let dx=d.x-a.x,dy=d.y-a.y,dist=dx*dx+dy*dy;
+      if(dist<=max&&dist<best){target=d;best=dist;}
+    }
+    if(!target)continue;if(attacker.energy<a.range)continue;
+    attacker.energy--;target.hp-=1/a.range;
+    a.angle=atan2(target.y-a.y,target.x-a.x)+PI/2;
+    c.strokeStyle=attacker.laser;c.lineWidth=1;c.beginPath();c.moveTo(a.x,a.y);c.lineTo(target.x,target.y);c.stroke();
+  }
+}
+status();
+}//update
+
+function bot(){let r=red.entities;if(r.length>=max)return;r.push(entity(rnd(W),0,PI,rnd(q+1,1),rnd(q+1,1)));}
+
+function entity(x,y,a,s,r){return {x,y,angle:a,speed:s,hp:q/abs(s),range:r};}
+
+function click({clientX:x,clientY:y}){
+let b=blue.entities;
+if(b.length>=max)return;
+y=ceil((W-y)/(W/q));
+if(!p){p=entity(x,W,0,-y);
+}else{p.range=y;b.push(p);if(channel)channel.send(JSON.stringify([p.x,W,p.range,p.speed]));p=null;}
+;}
+
+if(channel){channel.onmessage=e=>{let[x,w,r,s]=JSON.parse(e.data);red.entities.push(entity(x/w*W,0,PI,-s,r));}}
+
+function status(){
+let msg="\nShips: "+(5-blue.entities.length)+"/"+(5-red.entities.length)+"\nHealth:"+(blue.health)+"/"+(red.health)+"\nEnergy:"+(blue.energy)+"/"+(red.energy)+"\n\n";
+if(blue.entities.length<5){if(p){msg+="Select range";}else{msg+="Select position/speed";}}
+print(msg,c,"white");
+}
+
+function print(v,c,color="black",size=10,center=false){
+c.fillStyle=color;
+c.font=size+"px monospace";
+let lines=v.split("\n");
+let lineHeight=size*1.5;
+if(center){
+  c.textAlign="center";c.textBaseline="middle";
+  let totalHeight=lines.length*lineHeight;
+  let startY=W/2-totalHeight/2;
+  lines.forEach((line,i)=>{c.fillText(line,W/2,startY+i*lineHeight);});
+}else{
+  c.textAlign="left";c.textBaseline="top";
+  lines.forEach((line,i)=>{c.fillText(line,10,10+i*lineHeight);});
+}
+}//print
+
+let background=(()=>{
+let c=document.createElement("canvas").getContext("2d");c.canvas.width=c.canvas.height=W;
+let a=Array.from({length:(W**2)/3000},()=>{return {
+  x:rnd(W),y:rnd(W),r:rnd(3),
+  color:Array.from({length:3},()=>rnd(255,100)).reduce((a,v,i)=>a+(i?",":"")+v,"rgb(")+")"
+}});
+for(let i of a){c.beginPath();c.arc(i.x,i.y,i.r,0,PI*2);c.fillStyle=i.color;c.fill();}//stars
+c.strokeStyle="white";c.lineWidth=1;for(let i=1;i<5;i++){let y=i*(W/5);c.beginPath();c.moveTo(W-5,y);c.lineTo(W,y);c.stroke();}//ticks
+let g=gradient(c,[[0,"blue"],[1,"transparent"]],"linear");c.fillStyle=g;c.fillRect(0,W-50,W,50);//fog
+return c.canvas;
+})();//background
+
+function gradient(c,a,type="radial",coords){
+let g=type==="linear"?c.createLinearGradient(...(coords||[0,W,0,W-50])):c.createRadialGradient(...(coords||[0,0,0,0,0,1]));
+a.forEach(e=>g.addColorStop(...e));
+return g;
+}//gradient
+
+
+
+
+
+
+
+//function shape(a,s=1,m=true){let p=new Path2D;for(let i of a){for(let x of m?[1,-1]:[1]){p.moveTo(x*i[0]/s,i[1]/s);for(let j=2;j<i.length;j+=2)p.lineTo(x*i[j]/s,i[j+1]/s);}}return p;}
+function shape(array,gridsize=1,mirror=true){let p=new Path2D;for(let i of array){for(let x of mirror?[1,-1]:[1]){p.moveTo(x*i[0]/gridsize,i[1]/gridsize);for(let j=2;j<i.length;j+=2)p.lineTo(x*i[j]/gridsize,i[j+1]/gridsize);}}return p;}
+
+
+
+function rnd(b,a=0){return floor(random()*(b-a))+a;}
+
+
+
+
+
+
+
+
+
+
+}//game
+};
+  </script>
+</head>
+<body>
+</body>
+</html>
