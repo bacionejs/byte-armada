@@ -5,7 +5,7 @@
 # **Byte Armada Instructions**
 
 **Byte Armada** is a real-time strategy space shooter. It includes **Player vs. Computer** and an optional **Player vs. Player (PvP)** mode.  
-*PvP is not part of the competition, but if you'd like to try it, follow the instructions at the bottom.*
+*PvP is not part of the competition, but if you'd like to try it, follow the [**instructions**](#how-to-activate-hidden-pvp-mode).*
 
 ---
 
