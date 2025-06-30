@@ -37,7 +37,9 @@ elements.push(title,log,handshake);
 }//intro
 
 function channelsetup(ui){
-let pc=new RTCPeerConnection(),candidates=[];
+//let pc=new RTCPeerConnection()
+let pc=new RTCPeerConnection({iceServers:[{urls:"stun:stun.l.google.com:19302"}]});
+let candidates=[];
 pc.onicecandidate=e=>e.candidate&&candidates.push(e.candidate.toJSON());
 let done=()=>ui.set(JSON.stringify({sdp:pc.localDescription,candidates}));
 let wait=()=>pc.iceGatheringState==="complete"?done():pc.onicegatheringstatechange=()=>pc.iceGatheringState==="complete"&&done();
