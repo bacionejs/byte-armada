@@ -34,47 +34,48 @@ elements.push(title,log,handshake);
 }//intro
 
 function channelsetup(ui){
-let pc=new RTCPeerConnection({iceServers:[{urls:"stun:stun.l.google.com:19302"}]});
-let candidates=[];
-let done=()=>ui.set(JSON.stringify({sdp:pc.localDescription,candidates}));
-pc.onicecandidate=e=>{
-  if(e.candidate)candidates.push(e.candidate.toJSON());
-  else done();
-};
-
-let setup=()=>{ channel.onopen=ui.game; };
-
-if(confirm("Initiate?")){
-  channel=pc.createDataChannel("xxx");
-  setup();
-  pc.createOffer().then(o=>{
-    pc.setLocalDescription(o);
-    ui.set("Please wait...\nGathering connection info. This may take 60 seconds.");
-  });
-  ui.handshake(()=>{
-    let d=ui.get();
-    pc.setRemoteDescription(d.sdp);
-    d.candidates.forEach(c=>pc.addIceCandidate(c));
-  });
-}else{
-  pc.ondatachannel=e=>{
-    channel=e.channel;
-    setup();
+  let pc=new RTCPeerConnection({iceServers:[{urls:"stun:stun.l.google.com:19302"}]});
+  let candidates=[];
+  let msg="Each phase of the handshake can take a couple minutes.";
+  let done=()=>ui.set(JSON.stringify({sdp:pc.localDescription,candidates}));
+  pc.onicecandidate=e=>{
+    if(e.candidate)candidates.push(e.candidate.toJSON());
+    else done();
   };
-  ui.handshake(()=>{
-    try{
+  let setup=()=>{channel.onopen=ui.game;};
+  if(confirm("Initiate?")){
+    channel=pc.createDataChannel("xxx");
+    setup();
+    pc.createOffer().then(o=>{
+      pc.setLocalDescription(o);
+      ui.set(msg);
+    });
+    ui.handshake(()=>{
       let d=ui.get();
-      pc.setRemoteDescription(d.sdp).then(()=>{
-        d.candidates.forEach(c=>pc.addIceCandidate(c));
-        pc.createAnswer().then(a=>{
-          pc.setLocalDescription(a);
-          ui.set("Please wait...\nGathering connection info. This may take 60 seconds.");
+      pc.setRemoteDescription(d.sdp);
+      d.candidates.forEach(c=>pc.addIceCandidate(c));
+      ui.set(msg);
+    });
+  }else{
+    pc.ondatachannel=e=>{
+      channel=e.channel;
+      setup();
+    };
+    ui.handshake(()=>{
+      try{
+        let d=ui.get();
+        pc.setRemoteDescription(d.sdp).then(()=>{
+          d.candidates.forEach(c=>pc.addIceCandidate(c));
+          pc.createAnswer().then(a=>{
+            pc.setLocalDescription(a);
+            ui.set(msg);
+          });
         });
-      });
-    }catch{}
-  });
+        ui.set(msg);
+      }catch{}
+    });
+  }
 }
-}//channelsetup
 
 function game(){
 element("style").textContent="*{position:fixed;margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;}body{background:blue;}";
