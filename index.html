@@ -37,21 +37,39 @@ elements.push(title,log,handshake);
 }//intro
 
 function channelsetup(ui){
-//let pc=new RTCPeerConnection()
-let pc=new RTCPeerConnection({iceServers:[{urls:"stun:stun.l.google.com:19302"}]});
-let candidates=[];
-pc.onicecandidate=e=>e.candidate&&candidates.push(e.candidate.toJSON());
-let done=()=>ui.set(JSON.stringify({sdp:pc.localDescription,candidates}));
-let wait=()=>pc.iceGatheringState==="complete"?done():pc.onicegatheringstatechange=()=>pc.iceGatheringState==="complete"&&done();
-let setup=()=>channel.onopen=ui.game;
-if(confirm("Initiate?")){
-  channel=pc.createDataChannel("xxx");setup();
-  pc.createOffer().then(o=>{pc.setLocalDescription(o);wait();});
-  ui.handshake(()=>{let d=ui.get();pc.setRemoteDescription(d.sdp);d.candidates.forEach(c=>pc.addIceCandidate(c));});
-}else{
-  pc.ondatachannel=e=>(channel=e.channel,setup());
-  ui.handshake(()=>{try{let d=ui.get();pc.setRemoteDescription(d.sdp);d.candidates.forEach(c=>pc.addIceCandidate(c));pc.createAnswer().then(a=>{pc.setLocalDescription(a);wait();});}catch{}});
-}
+  let pc = new RTCPeerConnection({iceServers: [{urls: "stun:stun.l.google.com:19302"}]});
+  let candidates = [];
+  let done = () => ui.set(JSON.stringify({sdp: pc.localDescription, candidates}));
+  pc.onicecandidate = e => {
+    if (e.candidate) candidates.push(e.candidate.toJSON());
+    else done(); // ICE gathering complete
+  };
+
+  let setup = () => channel.onopen = ui.game;
+
+  if (confirm("Initiate?")) {
+    channel = pc.createDataChannel("xxx");
+    setup();
+    pc.createOffer().then(o => pc.setLocalDescription(o));
+    ui.handshake(() => {
+      let d = ui.get();
+      pc.setRemoteDescription(d.sdp);
+      d.candidates.forEach(c => pc.addIceCandidate(c));
+    });
+  } else {
+    pc.ondatachannel = e => {
+      channel = e.channel;
+      setup();
+    };
+    ui.handshake(() => {
+      try {
+        let d = ui.get();
+        pc.setRemoteDescription(d.sdp);
+        d.candidates.forEach(c => pc.addIceCandidate(c));
+        pc.createAnswer().then(a => pc.setLocalDescription(a));
+      } catch {}
+    });
+  }
 }
 
 function game(){
