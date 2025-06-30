@@ -17,7 +17,7 @@ let title=element("div"),handshake=element("button"),log=element("textarea");
 handshake.textContent="Handshake";
 log.style.height="90%";log.style.width="90%";
 log.style.display=handshake.style.display="none";
-Object.assign(title.style,{position:"fixed",left:"50%",top:"40%",transform:"translateX(-50%)",fontSize:30,color:"black",textAlign:"center",userSelect:"none"});
+Object.assign(title.style,{position:"fixed",left:"50%",top:"40%",transform:"translateX(-50%)",fontSize:"30px",color:"black",textAlign:"center",userSelect:"none"});
 title.textContent="Byte Armada";
 
 function startgame(){elements.forEach(e=>e.remove());[["pointerdown",down],["pointerup",up]].forEach(([t,h])=>removeEventListener(t,h));game();}
