@@ -34,7 +34,8 @@ elements.push(title,log,handshake);
 }//intro
 
 function channelsetup(ui){
-  let pc=new RTCPeerConnection({iceServers:[{urls:"stun:stun.l.google.com:19302"}]});
+//  let pc=new RTCPeerConnection({iceServers:[{urls:"stun:stun.l.google.com:19302"}]});
+  let pc=new RTCPeerConnection();
   let candidates=[];
   let msg="Each phase of the handshake can take a couple minutes.";
   let done=()=>ui.set(JSON.stringify({sdp:pc.localDescription,candidates}));
