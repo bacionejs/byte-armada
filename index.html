@@ -136,10 +136,9 @@ blue.energy=red.energy=energy;
 function start({clientX:x,clientY:y}){
 if(level==0)clearInterval(celebration);
 level=floor(x*5/W)+floor(y*5/W)*5+1;
-blue.energy=energy+(level*10);
 red.energy=energy+(level*10);
 if(channel){
-  // PvP
+  blue.energy=energy+(level*10);
 }else{
   bot();timers.push(setInterval(()=>{if(random()<0.8)bot();},5000));
 }
