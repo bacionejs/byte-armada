@@ -4,8 +4,7 @@
 
 # **Byte Armada Instructions**
 
-**Byte Armada** is a real-time strategy space shooter. It includes **Player vs. Computer** and an optional **Player vs. Player (PvP)** mode.  
-*PvP is not part of the competition, but if you'd like to try it, follow the [**instructions**](#pvp).*
+**Byte Armada** is a real-time strategy space shooter. It includes **Player vs. Computer** and an optional Player vs. Player [**PvP**](#pvp) mode.  
 
 ---
 
@@ -35,21 +34,14 @@ You **don’t click the tick marks**—they just show where the zones are.
 
 ---
 
-<h3 id="pvp">🤝 How to Activate Hidden PvP Mode</h3>
+<h3 id="pvp">🤝 How to Activate PvP Mode</h3>
 
-**PvP** is a hidden feature and **not officially supported** for the competition.
+Only supported on Android Chrome.
 
 To activate it:
 
-1. **Long press** the intro screen.  
-2. When prompted, choose **OK**.  
-3. **Copy the text** that appears and send it to your friend via instant messenger.
-4. Your friend (on the **same Wi-Fi network**) should:
-   - **Long press** the intro screen.
-   - Choose **Cancel** — ⚠️ do **NOT** click OK!
-   - **Paste your message** and click **Handshake**.
-   - **Copy the response** and send it back to you.
-5. You then **paste their response**, click **Handshake**, and the **PvP game will begin**.
+1. **Long-press** the intro screen.
+2. **Scan** each others phone
 
 ---
 
@@ -119,14 +111,4 @@ I really wanted to put sound into the game. Last year’s game had voice, explos
 
 ---
 
-### 🔐 PvP & the Quest for a Handshake
 
-I also wanted a **player-versus-player option**, and spent an absurd amount of time figuring out how to do the communication handshake between two phones *without* requiring a server. For development, I used a server to pass the handshake back and forth—it worked beautifully and required zero user interaction. That let me focus on testing the PvP logic without worrying about the plumbing.
-
-But to comply with **JS13K rules**, I had to ditch that approach. My first side quest was **QR code handshakes**. JavaScript now includes a QR *reader*, but not a QR *generator*. The available libraries are more than 7k. I spent ages trying to build a small QR generator, but it is just too complex. The best I could do was trim the logic to 5k—mostly by choosing a lower QR level, one character set, and stripping down the handshake payload.
-
-When that failed, I switched to **1D barcodes**. But since 1D barcodes are a magnitude stupider, it required a magnitude more coaxing to get the same amount of information into it and out of it, to the point where it became *cumbersome beyond belief*.
-
-But after what seemed like an eternity, a little voice in my head whispered, *"But nobody's gonna play this game anyway."*
-
-Into the trash went all my research. And now I force the users to use an **Instant Messenger app** to exchange the handshake. And it all seemed dubious to the point where I decided to **not enter the PvP option as part of the competition** and **hide it behind a long press on the intro screen**.
