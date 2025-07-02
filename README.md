@@ -7,12 +7,11 @@
 
 **Byte Armada** is a real-time strategy space shooter. 
 
+---
 
-
-
-Two modes:
-- Player vs. Computer
-- Player vs. Player
+Two modes:  
+- Player vs. Computer  
+- Player vs. Player  
 
 For PvP, just long-press the intro screen and scan each other's phone. Only supported on Android Chrome and both players must be on the same LAN. 
 
