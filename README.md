@@ -4,7 +4,17 @@
 
 # **Byte Armada Instructions**
 
-**Byte Armada** is a real-time strategy space shooter. It includes **Player vs. Computer** and an optional Player vs. Player [**PvP**](#pvp) mode.  
+
+**Byte Armada** is a real-time strategy space shooter. 
+
+
+
+
+Two modes:
+- Player vs. Computer
+- Player vs. Player
+
+For PvP, just long-press the intro screen and scan each other's phone. Only supported on Android Chrome and both players must be on the same LAN. 
 
 ---
 
@@ -31,11 +41,6 @@ You **don’t click the tick marks**—they just show where the zones are.
 
 🛡 Ships with **higher speed have less HP**,  
 🔫 Lasers with **longer range are weaker**.
-
----
-
-<h3 id="pvp">🤝 How to Activate PvP Mode</h3>
-Just long-press the intro screen and scan each other's phone. Only supported on Android Chrome and both players must be on the same LAN. 
 
 ---
 
