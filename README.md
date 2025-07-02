@@ -13,7 +13,7 @@ Two modes:
 - Player vs. Computer  
 - Player vs. Player  
 
-For PvP, just long-press the intro screen and scan each other's phone. Only supported on Android Chrome and both players must be on the same wifi. 
+For PvP, just long-press the intro screen and scan each other's phone, but only supported on Android Chrome and both players must be on the same wifi. 
 
 ---
 
