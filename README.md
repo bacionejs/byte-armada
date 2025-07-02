@@ -38,6 +38,8 @@ You **don’t click the tick marks**—they just show where the zones are.
 
 Only supported on Android Chrome.
 
+Both players must be on the same LAN/wifi.
+
 To activate it:
 
 1. **Long-press** the intro screen.
