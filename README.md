@@ -150,5 +150,5 @@ But, after hammering out all the details of player-to-player logic, I had to swi
 
 I settled on **barcodes** because it's the only handshake strategy that fits into the JS13K rules — although, it **only works on Android Chrome**.
 
-Of all the various barcode, **DataMatrix** hits the sweet spot between complexity and capacity.
+Of all the barcodes, **DataMatrix** hits the sweet spot between complexity and capacity.
 
