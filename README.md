@@ -134,7 +134,7 @@ Part of the problem is that when the game is constantly shooting, it ends up jus
 
 ---
 
-## 🤝 PvP Handshake
+## 🤝 PvP
 
 I wanted the option to have it **player versus player** and spent an incredible amount of time figuring out ways to do the **communication handshake between two phones without requiring a server**.
 
