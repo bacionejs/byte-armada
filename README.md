@@ -144,6 +144,8 @@ With that set up, I could focus on testing player-to-player logic without worryi
 
 But, after hammering out all the details of player-to-player logic, I had to switch to another strategy to be compliant.
 
+At one point, I used messenger for the handshake and supported remote PvP via STUN, but it was cumbersome and non-compliant.
+
 ---
 
 ## 📷 Barcode Handshake
@@ -151,4 +153,8 @@ But, after hammering out all the details of player-to-player logic, I had to swi
 I settled on **barcodes** because it's the only handshake strategy that fits into the JS13K rules — although, it **only works on Android Chrome**.
 
 Of all the barcodes, **DataMatrix** hits the sweet spot between complexity and capacity.
+
+Technically, you could send a barcode to a remote user, but it is best suited for face-to-face handshakes, so I dropped STUN support too, and now you must be on the same wifi.
+
+
 
