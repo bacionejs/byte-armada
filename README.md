@@ -150,7 +150,5 @@ But, after hammering out all the details of player-to-player logic, I had to swi
 
 I settled on **barcodes** because it's the only handshake strategy that fits into the JS13K rules — although, it **only works on Android Chrome**.
 
-- QR codes were too complicated.
-- 1D barcodes couldn't contain enough data.
-- But **DataMatrix** hit the sweet spot at **1000 character capacity**, enough for a compressed RTC handshake.
+Of all the various barcode, **DataMatrix** hits the sweet spot between complexity and capacity.
 
