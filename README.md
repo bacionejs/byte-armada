@@ -17,8 +17,6 @@ For PvP, just long-press the intro screen and scan each other's phone. Only supp
 
 ---
 
-### 🛠 How to Create a Ship
-
 To create a ship, **tap twice**:
 
 - The **first tap** sets **position and speed**.  
@@ -27,8 +25,6 @@ To create a ship, **tap twice**:
   The horizontal position of the second tap **doesn’t matter**.
 
 ---
-
-### 🗺 Zone System
 
 There are **five invisible zones**, indicated by tick marks on the **right side**.  
 You **don’t click the tick marks**—they just show where the zones are.
