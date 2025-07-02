@@ -36,12 +36,7 @@ You **don’t click the tick marks**—they just show where the zones are.
 
 <h3 id="pvp">🤝 How to Activate PvP Mode</h3>
 
-Only supported on Android Chrome and both players must be on the same LAN.
-
-To activate it:
-
-1. **Long-press** the intro screen.
-2. **Scan** each others phone
+Only supported on Android Chrome and both players must be on the same LAN. Just long-press the into screen and scan each others phone.
 
 ---
 
