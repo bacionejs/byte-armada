@@ -156,5 +156,8 @@ Of all the barcodes, **DataMatrix** hits the sweet spot between complexity and c
 
 Technically, you could send a barcode to a remote user, but it is best suited for face-to-face handshakes, so I dropped STUN support too, and now you must be on the same wifi.
 
+Datamatrix supports 2000 byte payload but anything above 200 is error prone with a tiny-code implimentation. RTC handshakes are 1600 bytes and compression only reduces it to 700. So, I implimented SDP elision to omit shared boilerplate, thus reducing the payload to 130 bytes.
+
+
 
 
