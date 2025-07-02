@@ -144,20 +144,17 @@ With that set up, I could focus on testing player-to-player logic without worryi
 
 But, after hammering out all the details of player-to-player logic, I had to switch to another strategy to be compliant.
 
-At one point, I used messenger for the handshake and supported remote PvP via STUN, but it was cumbersome and non-compliant.
-
----
+At one point, I used Messenger for the handshake and supported remote PvP via STUN, but it was cumbersome and non-compliant.
 
 ## 📷 Barcode Handshake
 
-I settled on **barcodes** because it's the only handshake strategy that fits into the JS13K rules — although, it **only works on Android Chrome**.
+I settled on **barcodes** because it's the only handshake strategy that fits into the JS13K rules — although it **only works on Android Chrome**.
+
+Technically, you could send a barcode to a remote user, but it is best suited for face-to-face handshakes, so I dropped STUN support too, and now you must be on the same Wi-Fi.
 
 Of all the barcodes, **DataMatrix** hits the sweet spot between complexity and capacity.
 
-Technically, you could send a barcode to a remote user, but it is best suited for face-to-face handshakes, so I dropped STUN support too, and now you must be on the same wifi.
-
-Datamatrix supports 2000 byte payload but anything above 200 is error prone with a tiny-code implimentation. RTC handshakes are 1600 bytes and compression only reduces it to 700. So, I implimented SDP elision to omit shared boilerplate, thus reducing the payload to 130 bytes.
-
+DataMatrix supports a 2000-byte payload, but anything above 200 is error-prone with a tiny-code implementation. RTC handshakes are 1600 bytes, and compression only reduces it to 700. So, I implemented **SDP elision** to omit shared boilerplate, thus reducing the payload to 130 bytes. 🎉
 
 
 
