@@ -136,7 +136,7 @@ Part of the problem is that when the game is constantly shooting, it ends up jus
 
 ## 🥊 PvP
 
-I wanted the option to have it **player versus player** and spent an incredible amount of time figuring out ways to do the **communication handshake between two phones without requiring a server**.
+I wanted the option to have **player versus player** and spent an incredible amount of time figuring out ways to do the **communication handshake between two phones without requiring a server**.
 
 For development testing, I used a server to pass the handshake back and forth. It was **delightfully smooth** and required no interaction from the user.
 
