@@ -45,70 +45,118 @@ To activate it:
 
 ---
 
-# **Post-Mortem: Byte Armada – Development & Design**
-
-*Byte Armada* is a real-time strategy space shooter built around simplicity and core strategic decisions. While inspired by classics like *Age of Empires*, my goal wasn’t to replicate them—it was to distill the genre down to its essence: managing resources and navigating the constant trade-off between agility and strength, hit power and firepower.
-
-Rather than offering a set of predefined unit types with fixed abilities, *Byte Armada* lets players define their own units through two adjustable stats: **speed** and **laser range**. These variables are **inversely tied to HP and damage**, resulting in **25 possible combinations**—each with its own tactical trade-offs. The interface remains simple, but the decisions carry weight.
-
-To keep controls streamlined, I avoided complex pathing or swiping mechanics. Instead, **all units march straight across the screen**—like pawns in a chess game. This reinforces the minimalist design and keeps the player focused on high-level strategy rather than micromanagement.
+# 📘 Post-Mortem
 
 ---
 
-### 🧩 Interface Trade-offs
+## 🎮 Gameplay Design
 
-**One of the main challenges** was minimizing UI clutter and reducing the number of interactions required to select a unit type. At minimum, each deployment needed **three inputs**: one for speed, one for range, and one for position. But in a fast-paced game, that felt too slow and cumbersome.
+**Byte Armada** is a real-time strategy space shooter.
 
-To address this, I **merged position with speed**—your unit’s starting position determines by how fast it is. While this approach is unorthodox and not immediately intuitive, it cuts interaction down to just **two choices per unit**. It was a trade-off in itself: *sacrificing clarity for fluidity*, but ultimately it served the pace and rhythm of the game better.
+My inspiration for the game is the classic *Age of Empires*, where you have to manage resources and choose different unit types. 
 
----
+I wanted to distill down to the essence of the genre — the balancing act between agility and strength, hit power and firepower — and make it with a simple interface.
 
-### ⚡ Energy & Unit Limits
+Instead of choosing distinct units with various abilities, you have **two abilities**, which, when combined, provide **25 combinations** of speed and laser range, which are inversely correlated to HP and hit power.
 
-**Resource management** is deliberately minimal, centered around a single stat: **energy**. All units draw from the same pool, requiring careful planning and restraint. On top of that, you’re limited to **five units on the board** at any given time. These constraints force tough choices and prevent the game from devolving into chaotic spam, keeping the focus on timing and composition.
-
-The delightful part of the design is how **complex strategies can emerge** from such a stripped-down interface. What starts as simple parameters quickly evolves into layered tactics as players respond to the opponent’s composition, energy state, and timing—*proving that depth doesn’t always require complexity*.
+To keep the controls simple, I decided that instead of swiping on a map to define a unit's route, they would just all **march across the screen like pawns in a chess game**.
 
 ---
 
-### ✏️ Art Pipeline – From Scratch
+## 🧠 UI and Controls
 
-Usually, I design very simple vector shapes, where I can determine all the points in my head. But this time, I wanted the ships to be a little more interesting—*more personality, more detail*. That meant I needed a drawing tool. I couldn't find one that fit my needs, so I built one. **Vector Bay** was born out of necessity: a lightweight, custom vector editor that let me sketch ships with just enough complexity to fit the game's style, without breaking its minimalist spirit.
+My main challenge for unit selection was **reducing the amount of UI clutter** and user interaction required to select a unit type.
 
-Since I planned on making symmetrical ships, I realized I only needed to **draw half a ship, then mirror it**—cutting down the size and simplifying the workflow.
+The minimum is three interactions: two are for your abilities and one is for your position.
 
-I tried many strategies for skinning the ships, but found that a simple **radial gradient** got the most bang for my buck. It gave the ships depth and contrast with minimal overhead, preserving the clean look while adding just enough visual flair to make each ship pop.
+But I didn't like having to perform three clicks in a fast-paced game.
 
----
-
-### 💡 UI Feedback Through Shape
-
-I don’t like how real-time strategy games often **clutter the screen** with health bars and energy meters floating above every unit. It pulls attention away from the action. Instead, I made each ship **visually shrink** as it takes damage. This gave players an immediate and intuitive sense of HP, without adding any extra UI elements. It’s subtle, but it fits the minimalist philosophy perfectly.
+So I **combined position with speed**. And while it is unorthodox and non-intuitive, it does reduce the number of user interactions.
 
 ---
 
-### 🔫 Instant Combat Logic
+## ⚡ Resource Management
 
-Initially, I wanted to give the lasers a sense of movement—maybe they would travel over time, requiring prediction and leading the target. But that quickly introduced complexity: hit detection, delays, syncing logic with animation. It didn’t fit the game’s stripped-down spirit. So I made every shot **instantaneous**. There’s no laser state or travel time. The logic simply **finds the closest target in range and applies damage**. Then, as an aside, the game draws a quick line to visualize it. The visuals are **entirely decoupled** from the logic, which keeps everything simple, fast, and easy to reason about.
+Resource management mainly consists of **one stat: energy**.
 
----
+But also, you're limited to **five units at a time** on the board.
 
-### 🧠 Simple AI
+With each level the enemy gets more energy. You can **skip levels** if you aren't challenged enough.
 
-I spent a lot of time thinking about AI for the enemy, but in the end, a *one-liner with random variables* was sufficient. It didn’t need to be smart—it just needed to be fast and unpredictable enough to keep pressure on the player. Anything more would have added bulk without improving the experience.
-
----
-
-### 🌌 Backgrounds – Minimal and Effective
-
-I experimented with many background ideas: shooting stars, moving stars, parallax stars, blinking stars, terrain, even complex terrain. But none of them struck the right balance between **aesthetic and code weight**. In the end, I settled on a **soft blue mist at the bottom** and a handful of **stars in different colors and sizes**—*all done in five lines of code*. It captured the feeling of space without distracting from the gameplay.
+The delightful part of the design is how **complex strategies can emerge from a simple interface**.
 
 ---
 
-### 🔇 The Sound of Silence
+## ✏️ Art and Visuals
 
-I really wanted to put sound into the game. Last year’s game had voice, explosions, laser sounds, and music. But after many long sidequests, I decided to leave it silent. Part of the problem is that when the game is constantly shooting, it ends up just being a *droning sound*—almost as if you could have just slapped a looping backtrack on top and called it a day. And that didn’t feel right either.
+Usually, I design very simple vector shapes. But I wanted my ships this time to be a little more interesting.
+
+With simple shapes, I can determine the points in my head. But for this, I needed a drawing tool and I couldn't find one which met my needs. Thus, [Vector Bay](//github.com/bacionejs/vectorbay) was born.
+
+Since I planned on making symmetrical ships, I realized that I only needed to **draw half a ship, then mirror it**.
+
+I tried many strategies for skinning the ships, but found that a **simple radial gradient** got the most bang for my buck.
+
+I don't like how real-time strategy games put health bars and energy bars above their characters. It clutters the UI. So, as a strategy to indicate a ship's HP, **they become smaller**.
 
 ---
 
+## 🔫 Lasers and Combat
+
+Initially, I wanted to make the laser have some movement, but this would have required leading the target and perhaps calculating hits.
+
+But since I planned on **every shot being perfect**, that really wasn't necessary. And the amount of code just wasn't worth it.
+
+So I switched to **instantaneous lasers** that didn't even have any state and completely **decoupled the visual of the laser from the internal logic**.
+
+> The internal logic says: *find the closest target in range and affect it*.  
+> And as an aside, show a line between the two.
+
+---
+
+## 🧠 AI
+
+I spent a lot of time thinking about AI for the enemy, but in the end a **one-liner with random variables was sufficient**.
+
+---
+
+## 🌌 Backgrounds
+
+I experimented with many background ideas: shooting stars, moving stars, blinking stars, terrain...
+
+But in the end I just chose a **blue mist at the bottom** and some stars of different color and different size — for a total of **five lines of code**.
+
+---
+
+## 🔇 Sound
+
+I really wanted to put sound into the game.
+
+Last year's game had voice, explosions, laser sounds, and music.
+
+But after many long sidequests, I decided **not to have anything**.
+
+Part of the problem is that when the game is constantly shooting, it ends up just being a droning sound — almost as if you could have put a backtrack on the game without it tied to logic.
+
+---
+
+## 🤝 PvP Handshake
+
+I wanted the option to have it **player versus player** and spent an incredible amount of time figuring out ways to do the **communication handshake between two phones without requiring a server**.
+
+For development testing, I used a server to pass the handshake back and forth. It was **delightfully smooth** and required no interaction from the user.
+
+With that set up, I could focus on testing player-to-player logic without worrying about the tedious details of the communication handshake.
+
+But, after hammering out all the details of player-to-player logic, I had to switch to another strategy to be compliant.
+
+---
+
+## 📷 Barcode Handshake
+
+I settled on **barcodes** because it's the only handshake strategy that fits into the JS13K rules — although, it **only works on Android Chrome**.
+
+- QR codes were too complicated.
+- 1D barcodes couldn't contain enough data.
+- But **DataMatrix** hit the sweet spot at **1000 character capacity**, enough for a compressed RTC handshake.
 
