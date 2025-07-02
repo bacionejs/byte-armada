@@ -32,7 +32,7 @@ You **don’t click the tick marks**—they just show where the zones are.
 - Your **first tap** determines the ship’s **horizontal position and speed** based on the zone you tapped.
 - Your **second tap** determines the **range**, also based on the zone.
 
-> With 5 zones used for both speed and range, there are **25 possible ship configurations**.
+> With 5 zones for 🎚️ speed and 🎚️ range, there are **25 possible ship configurations**.
 
 🛡 Ships with **higher speed have less HP**,  
 🔫 Lasers with **longer range are weaker**.
