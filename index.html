@@ -202,19 +202,19 @@ let d=(Math.min(screen.width,screen.height)<600)
   ?Math.round(window.innerWidth*0.7)
   :Math.round(2*96*window.devicePixelRatio);
 let [grid,size]=datamatrix(text);
-let pad=2,w=size+pad*2,h=w,path="";
+let pad=2,w=size+pad*2,path="";
 for(let j=size;j--;)for(let i=size,c=0;i--;){
   if(grid[j][i])c++;
   if(grid[j][i]&&!grid[j][i-1])path+="M"+i+","+j+"h"+c+"v1h-"+c+"v-1z",c=0;
 }
 let svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
-svg.setAttribute("viewBox","0 0 "+w+" "+h);
+svg.setAttribute("viewBox","0 0 "+w+" "+w);
 svg.setAttribute("width",d);
 svg.setAttribute("height",d);
 svg.setAttribute("fill","black");
 let bg=document.createElementNS(svg.namespaceURI,"path");
 bg.setAttribute("fill","#fff");
-bg.setAttribute("d","M0,0v"+h+"h"+w+"V0H0Z");
+bg.setAttribute("d","M0,0v"+w+"h"+w+"V0H0Z");
 svg.insertBefore(bg,null);
 let fg=document.createElementNS(svg.namespaceURI,"path");
 fg.setAttribute("transform","matrix(1,0,0,1,"+pad+","+pad+")");
