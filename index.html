@@ -196,16 +196,134 @@ function rnd(b,a=0){return floor(random()*(b-a))+a;}
 
 function handshake(){
 
-function displayBarcode(text){
-if(lastBarcode)lastBarcode.remove();
+
+
+
+
+
+
+
+
+
+let peer,channel,stream=null;
+let lastbarcode=null;
+let lastscanned="";
+let isanswerer=false;
+
+const box=element("div");
+box.style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:black;gap:10px;padding:10px;overflow:auto";
+
+const canvas=element("canvas",box);
+canvas.style.width="90vw";
+canvas.style.maxWidth="400px";
+canvas.style.height="auto";
+const ctx=canvas.getContext("2d");
+
+const video=element("video");
+video.style="display:none";
+video.autoplay=video.muted=video.playsInline=true;
+
+const overlay=element("div");
+overlay.style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;font:20px sans-serif;color:white;background:rgba(0,128,0,0.8);z-index:999;opacity:0;transition:opacity 0.3s";
+overlay.textContent="SCAN OK!";
+
+navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}}).then(async s=>{
+stream=video.srcObject=s;
+await video.play();
+const detector=new BarcodeDetector({formats:["data_matrix"]});
+const loop=async ()=>{
+  canvas.width=video.videoWidth;
+  canvas.height=video.videoHeight;
+  ctx.drawImage(video,0,0,canvas.width,canvas.height);
+  let w=200,h=200,x=(canvas.width-w)/2,y=(canvas.height-h)/2;
+  ctx.strokeStyle="#0f0";ctx.lineWidth=4;ctx.strokeRect(x,y,w,h);
+  try{
+    const codes=await detector.detect(canvas);
+    if(codes.length)await handlescan(codes[0].rawValue);
+  }catch{}
+  requestAnimationFrame(loop);
+};
+requestAnimationFrame(loop);
+});
+
+(async function(){
+let offercandidates=[];
+peer=new RTCPeerConnection();
+peer.onicecandidate=e=>{
+  if(e.candidate)offercandidates.push(e.candidate.toJSON());
+};
+channel=peer.createDataChannel("x");
+channel.onopen=()=>launchgame();
+let offer=await peer.createOffer();
+await peer.setLocalDescription(offer);
+await new Promise(r=>setTimeout(r,1000));
+let sdpText=SDP(peer.localDescription.sdp);
+displaybarcode(JSON.parse(JSON.stringify({sdp:sdpText,candidates:offercandidates})).sdp);
+})();
+
+
+
+
+
+
+
+
+
+
+
+async function handlescan(text){
+if(text===lastscanned)return;
+lastscanned=text;
+if(text.length<10)return;
+overlay.style.opacity=1;
+setTimeout(()=>overlay.style.opacity=0,1000);
+const json=text.trim().startsWith("{")?text:JSON.stringify({sdp:text,candidates:[]});
+const {sdp}=JSON.parse(json);
+const type=sdp.startsWith("v=0")||sdp.includes("\n")?SDP(sdp).split('|')[0]:sdp.split('|')[0];
+if(type==="offer"){
+  isanswerer=true;
+  peer=new RTCPeerConnection();
+  peer.ondatachannel=e=>{
+    channel=e.channel;
+    channel.onopen=()=>launchgame();
+  };
+  await peer.setRemoteDescription({type:"offer",sdp:SDP(sdp)});
+  const answerCandidates=[];
+  peer.onicecandidate=e=>{
+    if(e.candidate)answerCandidates.push(e.candidate.toJSON());
+  };
+  const answer=await peer.createAnswer();
+  await peer.setLocalDescription(answer);
+  await new Promise(r=>setTimeout(r,1000));
+  const compact=SDP(peer.localDescription.sdp);
+  displaybarcode(JSON.parse(JSON.stringify({sdp:compact,candidates:answerCandidates})).sdp);
+}else if(type==="answer"&&!isanswerer){
+  await peer.setRemoteDescription({type:"answer",sdp:SDP(sdp)});
+  const {candidates}=JSON.parse(json);
+  for(let c of candidates)await peer.addIceCandidate(c);
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+function displaybarcode(text){
+if(lastbarcode)lastbarcode.remove();
 let d=(Math.min(screen.width,screen.height)<600)
   ?Math.round(window.innerWidth*0.7)
   :Math.round(2*96*window.devicePixelRatio);
-let [grid,size]=datamatrix(text);
+let [a,size]=datamatrix(text);
 let pad=2,w=size+pad*2,path="";
 for(let j=size;j--;)for(let i=size,c=0;i--;){
-  if(grid[j][i])c++;
-  if(grid[j][i]&&!grid[j][i-1])path+="M"+i+","+j+"h"+c+"v1h-"+c+"v-1z",c=0;
+  if(a[j][i])c++;
+  if(a[j][i]&&!a[j][i-1])path+="M"+i+","+j+"h"+c+"v1h-"+c+"v-1z",c=0;
 }
 let svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
 svg.setAttribute("viewBox","0 0 "+w+" "+w);
@@ -220,109 +338,72 @@ let fg=document.createElementNS(svg.namespaceURI,"path");
 fg.setAttribute("transform","matrix(1,0,0,1,"+pad+","+pad+")");
 fg.setAttribute("d",path);
 svg.insertBefore(fg,null);
-box.insertBefore(lastBarcode=svg,canvas);
+box.insertBefore(lastbarcode=svg,canvas);
 }
 
-const box = element("div");
-box.style = "position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:black;gap:10px;padding:10px;overflow:auto";
 
-const canvas = element("canvas", box);
-canvas.style.width = "90vw";
-canvas.style.maxWidth = "400px";
-canvas.style.height = "auto";
-const ctx = canvas.getContext("2d");
 
-const video = element("video");
-video.style = "display:none";
-video.autoplay = video.muted = video.playsInline = true;
 
-const overlay = element("div");
-overlay.style = "position:fixed;inset:0;display:flex;align-items:center;justify-content:center;font:20px sans-serif;color:white;background:rgba(0,128,0,0.8);z-index:999;opacity:0;transition:opacity 0.3s";
-overlay.textContent = "SCAN OK!";
 
-let lastBarcode = null;
-let peer, dataChannel, stream = null;
-let lastScanned = "", generatedOffer = "", offerCandidates = [], isAnswerer = false;
 
-function launchGame(channel) {
- if (stream) for (const track of stream.getTracks()) track.stop();
- stream = null;
- for (const el of [...document.body.children]) if (el.tagName !== "SCRIPT") el.remove();
- game(channel);
+
+
+
+
+
+function launchgame(){
+if(stream)for(const track of stream.getTracks())track.stop();
+stream=null;
+for(const el of [...document.body.children])if(el.tagName!=="SCRIPT")el.remove();
+game(channel); // ✅ Handshake success 🎉 Game on! 🎮
 }
 
-async function createOffer() {
- peer = new RTCPeerConnection();
- peer.onicecandidate = e => {
-  if (e.candidate) offerCandidates.push(e.candidate.toJSON());
- };
- dataChannel = peer.createDataChannel("x");
- dataChannel.onopen = () => launchGame(dataChannel);
- let offer = await peer.createOffer();
- await peer.setLocalDescription(offer);
- await new Promise(r => setTimeout(r, 1000));
- let sdpText = SDP(peer.localDescription.sdp);
- generatedOffer = JSON.stringify({ sdp: sdpText, candidates: offerCandidates });
- displayBarcode(JSON.parse(generatedOffer).sdp);
+
+
+
+
+
+
+
+
+
+
+function SDP(s){
+if(s.includes("\n")){//strip
+  const g=r=>(s.match(r)||[])[1];
+  const lines=s.split("\n").map(l=>l.trim());
+  const setup=lines.find(l=>l.startsWith("a=setup:"))||"";
+  const type=setup.includes("active")?"answer":setup.includes("actpass")?"offer":"";
+  const fp=g(new RegExp("^a=fingerprint:sha-256 (.+)","m"))?.replace(/:/g,"");
+  const cand=(lines.find(l=>l.startsWith("a=candidate:"))||"").slice(12).trim().replace(/\s+/g," ");
+  const sessionId=g(new RegExp("^o=- (\\d+)","m"));
+  const ufrag=g(new RegExp("^a=ice-ufrag:(.+)","m"));
+  const pwd=g(new RegExp("^a=ice-pwd:(.+)","m"));
+  if(!type||!sessionId||!ufrag||!pwd||!fp||!cand)throw"Invalid SDP";
+  return [type,sessionId,ufrag,pwd,fp,cand].join("|");
+}else{//unstrip
+  const [type,sessionId,ufrag,pwd,fp,cand]=s.split("|");
+  const setup=type==="offer"?"actpass":"active";
+  return [
+    "v=0",
+    "o=- "+sessionId+" 2 IN IP4 0.0.0.0",
+    "s=-",
+    "t=0 0",
+    "m=application 9 UDP/DTLS/SCTP webrtc-datachannel",
+    "a=ice-ufrag:"+ufrag,
+    "a=ice-pwd:"+pwd,
+    "a=fingerprint:sha-256 "+fp.match(/.{2}/g).join(":"),
+    "a=setup:"+setup,
+    "a=candidate:"+cand,
+    "a=end-of-candidates"
+  ].join("\r\n")+"\r\n";
+}
 }
 
-async function handleScan(text) {
- if (text === lastScanned) return;
- lastScanned = text;
- if (text.length < 10) return;
 
- overlay.style.opacity = 1;
- setTimeout(() => overlay.style.opacity = 0, 1000);
 
- const json = text.trim().startsWith("{") ? text : JSON.stringify({ sdp: text, candidates: [] });
- const { sdp } = JSON.parse(json);
- const type = sdp.startsWith("v=0") || sdp.includes("\n") ? SDP(sdp).split('|')[0] : sdp.split('|')[0];
- if (type === "offer") {
-  isAnswerer = true;
-  peer = new RTCPeerConnection();
-  peer.ondatachannel = e => {
-   dataChannel = e.channel;
-   dataChannel.onopen = () => launchGame(dataChannel);
-  };
-  await peer.setRemoteDescription({ type: "offer", sdp: SDP(sdp) });
-  const answerCandidates = [];
-  peer.onicecandidate = e => {
-   if (e.candidate) answerCandidates.push(e.candidate.toJSON());
-  };
-  const answer = await peer.createAnswer();
-  await peer.setLocalDescription(answer);
-  await new Promise(r => setTimeout(r, 1000));
-  const compact = SDP(peer.localDescription.sdp);
-  const answerJSON = JSON.stringify({ sdp: compact, candidates: answerCandidates });
-  displayBarcode(JSON.parse(answerJSON).sdp);
- } else if (type === "answer" && !isAnswerer) {
-  await peer.setRemoteDescription({ type: "answer", sdp: SDP(sdp) });
-  const { candidates } = JSON.parse(json);
-  for (let c of candidates) await peer.addIceCandidate(c);
- }
-}
 
-navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(async s=>{
- stream = video.srcObject = s;
- await video.play();
- const detector = new BarcodeDetector({ formats: ["data_matrix"] });
- const loop = async () => {
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  let w = 200, h = 200, x = (canvas.width - w) / 2, y = (canvas.height - h) / 2;
-  ctx.strokeStyle = "#0f0"; ctx.lineWidth = 4; ctx.strokeRect(x, y, w, h);
-  try {
-   const codes = await detector.detect(canvas);
-   if (codes.length) await handleScan(codes[0].rawValue);
-  } catch {}
-  requestAnimationFrame(loop);
- };
- requestAnimationFrame(loop);
-});
 
-createOffer();
-}//handshake
 
 
 
@@ -398,35 +479,12 @@ return [grid,s+2*sc];
 
 
 
-function SDP(s){
-if(s.includes("\n")){
-  const g=(r)=>(s.match(r)||[])[1];
-  const lines=s.split("\n").map(l=>l.trim());
-  const setup=lines.find(l=>l.startsWith("a=setup:"))||"";
-  const type=setup.includes("active")?"answer":setup.includes("actpass")?"offer":"";
-  const fp=g(/^a=fingerprint:sha-256 (.+)/m)?.replace(/:/g,"");
-  const cand=(lines.find(l=>l.startsWith("a=candidate:"))||"").slice(12).trim().replace(/\s+/g," ");
-  const sessionId=g(/^o=- (\d+)/m),ufrag=g(/^a=ice-ufrag:(.+)/m),pwd=g(/^a=ice-pwd:(.+)/m);
-  if(!type||!sessionId||!ufrag||!pwd||!fp||!cand)throw"Invalid SDP";
-  return [type,sessionId,ufrag,pwd,fp,cand].join("|");
-}else{
-  const [type,sessionId,ufrag,pwd,fp,cand]=s.split("|");
-  const setup=type==="offer"?"actpass":"active";
-  return [
-    "v=0",
-    "o=- "+sessionId+" 2 IN IP4 0.0.0.0",
-    "s=-",
-    "t=0 0",
-    "m=application 9 UDP/DTLS/SCTP webrtc-datachannel",
-    "a=ice-ufrag:"+ufrag,
-    "a=ice-pwd:"+pwd,
-    "a=fingerprint:sha-256 "+fp.match(/.{2}/g).join(":"),
-    "a=setup:"+setup,
-    "a=candidate:"+cand,
-    "a=end-of-candidates"
-  ].join("\r\n")+"\r\n";
-}
-}
+
+
+
+
+
+}//handshake
 
 
 
