@@ -152,7 +152,7 @@ I settled on **barcodes** because it's the only handshake strategy that fits int
 
 Technically, you could send a barcode to a remote user, but it is best suited for face-to-face handshakes, so I dropped STUN support too, and now you must be on the same Wi-Fi.
 
-Of all the barcodes, **DataMatrix** hits the sweet spot between complexity and capacity, providing compression and error correction. It supports a 2000-byte payload, but anything above 200 is error-prone with a tiny-code implementation. RTC handshakes are 1600 bytes, and compression only reduces it to 700. So, I implemented **SDP elision** to omit shared boilerplate, thus reducing the payload to 130 bytes. 🎉
+Of all the barcodes, **DataMatrix** hits the best sweet spot between complexity and capacity, providing compression and error correction. It supports a 2000-byte payload, but anything above 200 is error-prone with a tiny-code implementation. RTC handshakes are 1600 bytes, and compression only reduces it to 700. So, I implemented **SDP elision** to omit shared boilerplate, thus reducing the payload to 130 bytes. 🎉
 
 
 
