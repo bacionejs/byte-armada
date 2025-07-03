@@ -196,12 +196,31 @@ function rnd(b,a=0){return floor(random()*(b-a))+a;}
 
 function handshake(){
 
-function displayBarcode(text) {
- if (lastBarcode) lastBarcode.remove();
- let pixelWidth = (Math.min(screen.width, screen.height) < 600)
-  ? Math.round(window.innerWidth * 0.7)
-  : Math.round(2 * 96 * window.devicePixelRatio);
- box.insertBefore(lastBarcode = DM(pixelWidth, text), canvas);
+function displayBarcode(text){
+if(lastBarcode)lastBarcode.remove();
+let d=(Math.min(screen.width,screen.height)<600)
+  ?Math.round(window.innerWidth*0.7)
+  :Math.round(2*96*window.devicePixelRatio);
+let [grid,size]=datamatrix(text);
+let pad=2,w=size+pad*2,h=w,path="";
+for(let j=size;j--;)for(let i=size,c=0;i--;){
+  if(grid[j][i])c++;
+  if(grid[j][i]&&!grid[j][i-1])path+="M"+i+","+j+"h"+c+"v1h-"+c+"v-1z",c=0;
+}
+let svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+svg.setAttribute("viewBox","0 0 "+w+" "+h);
+svg.setAttribute("width",d);
+svg.setAttribute("height",d);
+svg.setAttribute("fill","black");
+let bg=document.createElementNS(svg.namespaceURI,"path");
+bg.setAttribute("fill","#fff");
+bg.setAttribute("d","M0,0v"+h+"h"+w+"V0H0Z");
+svg.insertBefore(bg,null);
+let fg=document.createElementNS(svg.namespaceURI,"path");
+fg.setAttribute("transform","matrix(1,0,0,1,"+pad+","+pad+")");
+fg.setAttribute("d",path);
+svg.insertBefore(fg,null);
+box.insertBefore(lastBarcode=svg,canvas);
 }
 
 const box = element("div");
@@ -310,15 +329,24 @@ createOffer();
 
 
 
-function DM(dim,text=""){
-let grid=[],x=0,y=0,setBit=(i,j)=>(grid[j]??=[])[i]=1;
-
-function encode(text){
-let data=ascii(String.fromCharCode(...new TextEncoder().encode(text))),dl=data.length;
-let s=6,i=-1,len,z,blocks=1,sc=1,cell,rsPoly=[5,7,10,12,14,18,20,24,28,36,42,48,56,68,84,112,144,192,224,272,336,408,496,620],rs=Array(70),chk=Array(70),log=Array(256),exp=Array(255),t=2;
-do{if(++i===rsPoly.length)return[0,0];if(s>11*t)t=4+t&12;s+=t;len=s*s>>3;}while(len-rsPoly[i]<dl);
-if(s>27)sc=2*(s/54|0)+2;if(len>255)blocks=2*(len>>9)+2;z=rsPoly[i];cell=s/sc;
-if(dl<len-z)data[dl++]=129;while(dl<len-z)data[dl++]=((149*dl)%253+130)%254;z/=blocks;
+function datamatrix(text){
+let grid=[];
+let on=(i,j)=>(grid[j]??=[])[i]=1;
+let data=[],raw=new TextEncoder().encode(text),len=raw.length;
+for(let i=0;i<len;i++){
+  let a=raw[i],b=(i+1<len)?raw[i+1]:0;
+  if(a>47&&a<58&&b>47&&b<58){data.push((a-48)*10+b+82);i++;}
+  else data.push(a+1);
+}
+let dl=data.length,s=6,i=-1,z,blocks=1,sc=1,cell,t=2;
+let rsPoly=[5,7,10,12,14,18,20,24,28,36,42,48,56,68,84,112,144,192,224,272,336,408,496,620];
+let rs=Array(70),chk=Array(70),log=Array(256),exp=Array(255);
+do{if(++i===rsPoly.length)return;if(s>11*t)t=4+t&12;s+=t;len=s*s>>3;}while(len-rsPoly[i]<dl);
+if(s>27)sc=2*(s/54|0)+2;if(len>255)blocks=2*(len>>9)+2;
+z=rsPoly[i];cell=s/sc;
+if(dl<len-z)data[dl++]=129;
+while(dl<len-z)data[dl++]=((149*dl)%253+130)%254;
+z/=blocks;
 for(i=1,t=0;t<255;t++){exp[t]=i;log[i]=t;i+=i;if(i>255)i^=301;}
 rs[z]=0;
 for(t=1;t<=z;t++){for(i=z-t,rs[i]=1;i<z;i++)rs[i]=rs[i+1]^exp[(log[rs[i]]+t)%255];}
@@ -330,17 +358,25 @@ for(let blk=0;blk<blocks;blk++){
   }
   for(t=0;t<z;t++)data[dl+blk+t*blocks]=chk[t];
 }
-for(t=0;t<s+2*sc;t+=cell+2)for(i=0;i<s+2*sc;i++)setBit(i,t+cell+1),(i&1)===0&&setBit(i,t);
-for(t=0;t<s+2*sc;t+=cell+2)for(i=0;i<s;i++)setBit(t,i+(i/cell|0)*2+1),(i&1)&&setBit(t+cell+1,i+(i/cell|0)*2);
+for(t=0;t<s+2*sc;t+=cell+2)
+  for(i=0;i<s+2*sc;i++)on(i,t+cell+1),(i&1)===0&&on(i,t);
+for(t=0;t<s+2*sc;t+=cell+2)
+  for(i=0;i<s;i++)on(t,i+(i/cell|0)*2+1),(i&1)&&on(t+cell+1,i+(i/cell|0)*2);
 z=2;let cx=0,cy=4,pat=[0,0,-1,0,-2,0,0,-1,-1,-1,-2,-1,-1,-2,-2,-2];t=0;
 while(t<len){
   if(cy===s-3&&cx===-1)rs=[s,6-s,s,5-s,s,4-s,s,3-s,s-1,3-s,3,2,2,2,1,2];
-  else if(cy===s+1&&cx===1&&(s&7)===0&&(s&7)===6)rs=[s-2,-s,s-3,-s,s-4,-s,s-2,-1-s,s-3,-1-s,s-4,-1-s,s-2,-2,-1,-2];
+  else if(cy===s+1&&cx===1&&(s&7)===0&&(s&7)===6)
+    rs=[s-2,-s,s-3,-s,s-4,-s,s-2,-1-s,s-3,-1-s,s-4,-1-s,s-2,-2,-1,-2];
   else{
     if(cy===0&&cx===s-2&&(s&3)){t++;continue;}
-    if(cy<0||cx>=s||cy>=s||cx<0){z=-z;cy+=2+z/2;cx+=2-z/2;while(cy<0||cx>=s||cy>=s||cx<0)cy-=z,cx+=z;}
-    if(cy===s-2&&cx===0&&(s&3))rs=[s-1,3-s,s-1,2-s,s-2,2-s,s-3,2-s,s-4,2-s,0,1,0,0,0,-1];
-    else if(cy===s-2&&cx===0&&(s&7)===4)rs=[s-1,5-s,s-1,4-s,s-1,3-s,s-1,2-s,s-2,2-s,0,1,0,0,0,-1];
+    if(cy<0||cx>=s||cy>=s||cx<0){
+      z=-z;cy+=2+z/2;cx+=2-z/2;
+      while(cy<0||cx>=s||cy>=s||cx<0)cy-=z,cx+=z;
+    }
+    if(cy===s-2&&cx===0&&(s&3))
+      rs=[s-1,3-s,s-1,2-s,s-2,2-s,s-3,2-s,s-4,2-s,0,1,0,0,0,-1];
+    else if(cy===s-2&&cx===0&&(s&7)===4)
+      rs=[s-1,5-s,s-1,4-s,s-1,3-s,s-1,2-s,s-2,2-s,0,1,0,0,0,-1];
     else if(cy===1&&cx===s-1&&(s&7)===0&&(s&7)===6){t++;continue;}
     else rs=pat;
   }
@@ -349,76 +385,47 @@ while(t<len){
     let px=cx+rs[i],py=cy+rs[i+1];
     if(px<0)px+=s,py+=4-((s+4)&7);
     if(py<0)py+=s,px+=4-((s+4)&7);
-    setBit(px+2*(px/cell|0)+1,py+2*(py/cell|0)+1);
+    on(px+2*(px/cell|0)+1,py+2*(py/cell|0)+1);
   }
   cy-=z;cx+=z;
 }
-for(t=s;t&3;t--)setBit(t,t);x=s+2*sc;y=s+2*sc;
+for(t=s;t&3;t--)on(t,t);
+return [grid,s+2*sc];
 }
 
-function ascii(text){
-let out=[],len=text.length;
-for(let i=0;i<len;i++){
-  let a=text.charCodeAt(i),b=(i+1<len)?text.charCodeAt(i+1):0;
-  out.push(a>47&&a<58&&b>47&&b<58?(a-48)*10+b+82:(a+1));if(a>47&&a<58&&b>47&&b<58)i++;
-}
-return out;
-}
-
-function make(tag,attr){
-let el = document.createElementNS(ns, tag);
-for (let k in attr) el.setAttribute(k, attr[k]);
-return el;
-}
-
-let ns="http://www.w3.org/2000/svg",mat=[1,0,0,1,2,2],size=Math.abs(dim)||256,path="";
-encode(text);
-let viewW=x+4,viewH=y+4;
-for(let j=y;j--;)for(let i=x,cnt=0;i--;){
-  if(grid[j][i])cnt++;
-  if(grid[j][i]&&!grid[j][i-1])path+=`M${i},${j}h${cnt}v1h-${cnt}v-1z`,cnt=0;
-}
-let svg=make("svg",{viewBox:`0 0 ${viewW} ${viewH}`,width:size*viewW/viewH|0,height:size,fill:"black","shape-rendering":"crispEdges"});
-svg.appendChild(make("path",{fill:"#fff",d:`M0,0v${viewH}h${viewW}V0H0Z`}));
-svg.appendChild(make("path",{transform:`matrix(${mat})`,d:path}));
-
-return svg;
-
-}//datamatrix
 
 
 
 
 
-
-function SDP(s) {
- if (s.includes('\n')) {
-  const g = (r) => (s.match(r) || [])[1];
-  const lines = s.split('\n').map(l => l.trim());
-  const setup = lines.find(l => l.startsWith('a=setup:')) || '';
-  const type = setup.includes('active') ? 'answer' : setup.includes('actpass') ? 'offer' : '';
-  const fp = g(/^a=fingerprint:sha-256 (.+)/m)?.replace(/:/g, '');
-  const cand = (lines.find(l => l.startsWith('a=candidate:')) || '').slice(12).trim().replace(/\s+/g, ' ');
-  const sessionId = g(/^o=- (\d+)/m), ufrag = g(/^a=ice-ufrag:(.+)/m), pwd = g(/^a=ice-pwd:(.+)/m);
-  if (!type || !sessionId || !ufrag || !pwd || !fp || !cand) throw 'Invalid SDP';
-  return [type, sessionId, ufrag, pwd, fp, cand].join('|');
- } else {
-  const [type, sessionId, ufrag, pwd, fp, cand] = s.split('|');
-  const setup = type === 'offer' ? 'actpass' : 'active';
+function SDP(s){
+if(s.includes("\n")){
+  const g=(r)=>(s.match(r)||[])[1];
+  const lines=s.split("\n").map(l=>l.trim());
+  const setup=lines.find(l=>l.startsWith("a=setup:"))||"";
+  const type=setup.includes("active")?"answer":setup.includes("actpass")?"offer":"";
+  const fp=g(/^a=fingerprint:sha-256 (.+)/m)?.replace(/:/g,"");
+  const cand=(lines.find(l=>l.startsWith("a=candidate:"))||"").slice(12).trim().replace(/\s+/g," ");
+  const sessionId=g(/^o=- (\d+)/m),ufrag=g(/^a=ice-ufrag:(.+)/m),pwd=g(/^a=ice-pwd:(.+)/m);
+  if(!type||!sessionId||!ufrag||!pwd||!fp||!cand)throw"Invalid SDP";
+  return [type,sessionId,ufrag,pwd,fp,cand].join("|");
+}else{
+  const [type,sessionId,ufrag,pwd,fp,cand]=s.split("|");
+  const setup=type==="offer"?"actpass":"active";
   return [
-   "v=0",
-   `o=- ${sessionId} 2 IN IP4 0.0.0.0`,
-   "s=-",
-   "t=0 0",
-   "m=application 9 UDP/DTLS/SCTP webrtc-datachannel",
-   `a=ice-ufrag:${ufrag}`,
-   `a=ice-pwd:${pwd}`,
-   `a=fingerprint:sha-256 ${fp.match(/.{2}/g).join(':')}`,
-   `a=setup:${setup}`,
-   `a=candidate:${cand}`,
-   "a=end-of-candidates"
-  ].join('\r\n') + '\r\n';
- }
+    "v=0",
+    "o=- "+sessionId+" 2 IN IP4 0.0.0.0",
+    "s=-",
+    "t=0 0",
+    "m=application 9 UDP/DTLS/SCTP webrtc-datachannel",
+    "a=ice-ufrag:"+ufrag,
+    "a=ice-pwd:"+pwd,
+    "a=fingerprint:sha-256 "+fp.match(/.{2}/g).join(":"),
+    "a=setup:"+setup,
+    "a=candidate:"+cand,
+    "a=end-of-candidates"
+  ].join("\r\n")+"\r\n";
+}
 }
 
 
