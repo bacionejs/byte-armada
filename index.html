@@ -1,88 +1,46 @@
-<!DOCTYPE html><html lang="en"><head>
-<meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
-<title>Byte Armada</title>
-</head><body>
 <script>
-function DM(dim,text=""){
-let grid=[],x=0,y=0,setBit=(i,j)=>(grid[j]??=[])[i]=1;
-
-function encode(text){
-let data=ascii(String.fromCharCode(...new TextEncoder().encode(text))),dl=data.length;
-let s=6,i=-1,len,z,blocks=1,sc=1,cell,rsPoly=[5,7,10,12,14,18,20,24,28,36,42,48,56,68,84,112,144,192,224,272,336,408,496,620],rs=Array(70),chk=Array(70),log=Array(256),exp=Array(255),t=2;
-do{if(++i===rsPoly.length)return[0,0];if(s>11*t)t=4+t&12;s+=t;len=s*s>>3;}while(len-rsPoly[i]<dl);
-if(s>27)sc=2*(s/54|0)+2;if(len>255)blocks=2*(len>>9)+2;z=rsPoly[i];cell=s/sc;
-if(dl<len-z)data[dl++]=129;while(dl<len-z)data[dl++]=((149*dl)%253+130)%254;z/=blocks;
-for(i=1,t=0;t<255;t++){exp[t]=i;log[i]=t;i+=i;if(i>255)i^=301;}
-rs[z]=0;
-for(t=1;t<=z;t++){for(i=z-t,rs[i]=1;i<z;i++)rs[i]=rs[i+1]^exp[(log[rs[i]]+t)%255];}
-for(let blk=0;blk<blocks;blk++){
-  for(t=0;t<=z;t++)chk[t]=0;
-  for(t=blk;t<dl;t+=blocks){
-    let x=chk[0]^data[t];
-    for(i=0;i<z;i++)chk[i]=chk[i+1]^(x?exp[(log[rs[i]]+log[x])%255]:0);
-  }
-  for(t=0;t<z;t++)data[dl+blk+t*blocks]=chk[t];
-}
-for(t=0;t<s+2*sc;t+=cell+2)for(i=0;i<s+2*sc;i++)setBit(i,t+cell+1),(i&1)===0&&setBit(i,t);
-for(t=0;t<s+2*sc;t+=cell+2)for(i=0;i<s;i++)setBit(t,i+(i/cell|0)*2+1),(i&1)&&setBit(t+cell+1,i+(i/cell|0)*2);
-z=2;let cx=0,cy=4,pat=[0,0,-1,0,-2,0,0,-1,-1,-1,-2,-1,-1,-2,-2,-2];t=0;
-while(t<len){
-  if(cy===s-3&&cx===-1)rs=[s,6-s,s,5-s,s,4-s,s,3-s,s-1,3-s,3,2,2,2,1,2];
-  else if(cy===s+1&&cx===1&&(s&7)===0&&(s&7)===6)rs=[s-2,-s,s-3,-s,s-4,-s,s-2,-1-s,s-3,-1-s,s-4,-1-s,s-2,-2,-1,-2];
-  else{
-    if(cy===0&&cx===s-2&&(s&3)){t++;continue;}
-    if(cy<0||cx>=s||cy>=s||cx<0){z=-z;cy+=2+z/2;cx+=2-z/2;while(cy<0||cx>=s||cy>=s||cx<0)cy-=z,cx+=z;}
-    if(cy===s-2&&cx===0&&(s&3))rs=[s-1,3-s,s-1,2-s,s-2,2-s,s-3,2-s,s-4,2-s,0,1,0,0,0,-1];
-    else if(cy===s-2&&cx===0&&(s&7)===4)rs=[s-1,5-s,s-1,4-s,s-1,3-s,s-1,2-s,s-2,2-s,0,1,0,0,0,-1];
-    else if(cy===1&&cx===s-1&&(s&7)===0&&(s&7)===6){t++;continue;}
-    else rs=pat;
-  }
-  let byte=data[t++];
-  for(i=0;byte>0;i+=2,byte>>=1)if(byte&1){
-    let px=cx+rs[i],py=cy+rs[i+1];
-    if(px<0)px+=s,py+=4-((s+4)&7);
-    if(py<0)py+=s,px+=4-((s+4)&7);
-    setBit(px+2*(px/cell|0)+1,py+2*(py/cell|0)+1);
-  }
-  cy-=z;cx+=z;
-}
-for(t=s;t&3;t--)setBit(t,t);x=s+2*sc;y=s+2*sc;
-}
-
-function ascii(text){
-let out=[],len=text.length;
-for(let i=0;i<len;i++){
-  let a=text.charCodeAt(i),b=(i+1<len)?text.charCodeAt(i+1):0;
-  out.push(a>47&&a<58&&b>47&&b<58?(a-48)*10+b+82:(a+1));if(a>47&&a<58&&b>47&&b<58)i++;
-}
-return out;
-}
-
-function make(tag,attr){
-let el = document.createElementNS(ns, tag);
-for (let k in attr) el.setAttribute(k, attr[k]);
-return el;
-}
-
-let ns="http://www.w3.org/2000/svg",mat=[1,0,0,1,2,2],size=Math.abs(dim)||256,path="";
-encode(text);
-let viewW=x+4,viewH=y+4;
-for(let j=y;j--;)for(let i=x,cnt=0;i--;){
-  if(grid[j][i])cnt++;
-  if(grid[j][i]&&!grid[j][i-1])path+=`M${i},${j}h${cnt}v1h-${cnt}v-1z`,cnt=0;
-}
-let svg=make("svg",{viewBox:`0 0 ${viewW} ${viewH}`,width:size*viewW/viewH|0,height:size,fill:"black","shape-rendering":"crispEdges"});
-svg.appendChild(make("path",{fill:"#fff",d:`M0,0v${viewH}h${viewW}V0H0Z`}));
-svg.appendChild(make("path",{transform:`matrix(${mat})`,d:path}));
-
-return svg;
-
-}
-</script>
-<script>
-function game(channel){
 function element(e,p){return (p||document.body).appendChild(document.createElement(e))}
+
+
+
+
+
+
+window.onload = () => {
+document.title="Byte Armada";
+
+let intro=element("div");
+intro.style="position:fixed;inset:0;font:20px monospace;display:flex;align-items:center;justify-content:center;text-align:center;user-select:none";
+intro.innerHTML="B y t e<br>A r m a d a ";
+
+let hold, timeout;
+intro.onpointerdown = e => {
+ e.preventDefault();
+ timeout = setTimeout(() => {
+   hold = true;
+   intro.remove();
+   handshake(); // Long press triggers PvP
+ }, 600);
+};
+
+intro.onpointerup = _ => {
+ clearTimeout(timeout);
+ if (!hold) {
+   intro.remove();
+   game(); // Tap triggers PvC
+ }
+ hold = false;
+};
+};
+
+
+
+
+
+
+function game(channel){
 element("style").textContent="*{position:fixed;margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;}body{background:blue;}";
 let {floor,ceil,random,PI,abs,atan2,min}=Math;
 let level=0,W=min(innerWidth,innerHeight),mode=0,p=null,FPS=30,q=5,buckettime=20,energy=100,cooldown=FPS,max=5,health=3,timers=[],scale=((W/q)/(FPS*buckettime));
@@ -229,49 +187,14 @@ return g;
 function shape(array,gridsize=20,mirror=true){let p=new Path2D;for(let i of array){for(let x of mirror?[1,-1]:[1]){p.moveTo(x*i[0]/gridsize,i[1]/gridsize);for(let j=2;j<i.length;j+=2)p.lineTo(x*i[j]/gridsize,i[j+1]/gridsize);}}return p;}
 
 function rnd(b,a=0){return floor(random()*(b-a))+a;}
-}
-</script>
-<script>
-function SDP(s) {
- if (s.includes('\n')) {
-  const g = (r) => (s.match(r) || [])[1];
-  const lines = s.split('\n').map(l => l.trim());
-  const setup = lines.find(l => l.startsWith('a=setup:')) || '';
-  const type = setup.includes('active') ? 'answer' : setup.includes('actpass') ? 'offer' : '';
-  const fp = g(/^a=fingerprint:sha-256 (.+)/m)?.replace(/:/g, '');
-  const cand = (lines.find(l => l.startsWith('a=candidate:')) || '').slice(12).trim().replace(/\s+/g, ' ');
-  const sessionId = g(/^o=- (\d+)/m), ufrag = g(/^a=ice-ufrag:(.+)/m), pwd = g(/^a=ice-pwd:(.+)/m);
-  if (!type || !sessionId || !ufrag || !pwd || !fp || !cand) throw 'Invalid SDP';
-  return [type, sessionId, ufrag, pwd, fp, cand].join('|');
- } else {
-  const [type, sessionId, ufrag, pwd, fp, cand] = s.split('|');
-  const setup = type === 'offer' ? 'actpass' : 'active';
-  return [
-   "v=0",
-   `o=- ${sessionId} 2 IN IP4 127.0.0.1`,
-   "s=-",
-   "t=0 0",
-   "a=group:BUNDLE 0",
-   "a=extmap-allow-mixed",
-   "a=msid-semantic: WMS *",
-   "m=application 9 UDP/DTLS/SCTP webrtc-datachannel",
-   "c=IN IP4 0.0.0.0",
-   `a=ice-ufrag:${ufrag}`,
-   `a=ice-pwd:${pwd}`,
-   "a=ice-options:trickle",
-   `a=fingerprint:sha-256 ${fp.match(/.{2}/g).join(':')}`,
-   `a=setup:${setup}`,
-   "a=mid:0",
-   "a=sctpmap:5000 webrtc-datachannel 1024",
-   `a=candidate:${cand}`,
-   "a=end-of-candidates"
-  ].join('\r\n') + '\r\n';
- }
-}
-</script>
-<script>
+}//game
+
+
+
+
+
+
 function handshake(){
-function element(e,p){return (p||document.body).appendChild(document.createElement(e))}
 
 function displayBarcode(text) {
  if (lastBarcode) lastBarcode.remove();
@@ -380,35 +303,134 @@ navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).th
 });
 
 createOffer();
+}//handshake
+
+
+
+
+
+
+function DM(dim,text=""){
+let grid=[],x=0,y=0,setBit=(i,j)=>(grid[j]??=[])[i]=1;
+
+function encode(text){
+let data=ascii(String.fromCharCode(...new TextEncoder().encode(text))),dl=data.length;
+let s=6,i=-1,len,z,blocks=1,sc=1,cell,rsPoly=[5,7,10,12,14,18,20,24,28,36,42,48,56,68,84,112,144,192,224,272,336,408,496,620],rs=Array(70),chk=Array(70),log=Array(256),exp=Array(255),t=2;
+do{if(++i===rsPoly.length)return[0,0];if(s>11*t)t=4+t&12;s+=t;len=s*s>>3;}while(len-rsPoly[i]<dl);
+if(s>27)sc=2*(s/54|0)+2;if(len>255)blocks=2*(len>>9)+2;z=rsPoly[i];cell=s/sc;
+if(dl<len-z)data[dl++]=129;while(dl<len-z)data[dl++]=((149*dl)%253+130)%254;z/=blocks;
+for(i=1,t=0;t<255;t++){exp[t]=i;log[i]=t;i+=i;if(i>255)i^=301;}
+rs[z]=0;
+for(t=1;t<=z;t++){for(i=z-t,rs[i]=1;i<z;i++)rs[i]=rs[i+1]^exp[(log[rs[i]]+t)%255];}
+for(let blk=0;blk<blocks;blk++){
+  for(t=0;t<=z;t++)chk[t]=0;
+  for(t=blk;t<dl;t+=blocks){
+    let x=chk[0]^data[t];
+    for(i=0;i<z;i++)chk[i]=chk[i+1]^(x?exp[(log[rs[i]]+log[x])%255]:0);
+  }
+  for(t=0;t<z;t++)data[dl+blk+t*blocks]=chk[t];
 }
-</script>
-<script>
-window.onload = () => {
-function element(e,p){return (p||document.body).appendChild(document.createElement(e))}
-document.title="Byte Armada";
+for(t=0;t<s+2*sc;t+=cell+2)for(i=0;i<s+2*sc;i++)setBit(i,t+cell+1),(i&1)===0&&setBit(i,t);
+for(t=0;t<s+2*sc;t+=cell+2)for(i=0;i<s;i++)setBit(t,i+(i/cell|0)*2+1),(i&1)&&setBit(t+cell+1,i+(i/cell|0)*2);
+z=2;let cx=0,cy=4,pat=[0,0,-1,0,-2,0,0,-1,-1,-1,-2,-1,-1,-2,-2,-2];t=0;
+while(t<len){
+  if(cy===s-3&&cx===-1)rs=[s,6-s,s,5-s,s,4-s,s,3-s,s-1,3-s,3,2,2,2,1,2];
+  else if(cy===s+1&&cx===1&&(s&7)===0&&(s&7)===6)rs=[s-2,-s,s-3,-s,s-4,-s,s-2,-1-s,s-3,-1-s,s-4,-1-s,s-2,-2,-1,-2];
+  else{
+    if(cy===0&&cx===s-2&&(s&3)){t++;continue;}
+    if(cy<0||cx>=s||cy>=s||cx<0){z=-z;cy+=2+z/2;cx+=2-z/2;while(cy<0||cx>=s||cy>=s||cx<0)cy-=z,cx+=z;}
+    if(cy===s-2&&cx===0&&(s&3))rs=[s-1,3-s,s-1,2-s,s-2,2-s,s-3,2-s,s-4,2-s,0,1,0,0,0,-1];
+    else if(cy===s-2&&cx===0&&(s&7)===4)rs=[s-1,5-s,s-1,4-s,s-1,3-s,s-1,2-s,s-2,2-s,0,1,0,0,0,-1];
+    else if(cy===1&&cx===s-1&&(s&7)===0&&(s&7)===6){t++;continue;}
+    else rs=pat;
+  }
+  let byte=data[t++];
+  for(i=0;byte>0;i+=2,byte>>=1)if(byte&1){
+    let px=cx+rs[i],py=cy+rs[i+1];
+    if(px<0)px+=s,py+=4-((s+4)&7);
+    if(py<0)py+=s,px+=4-((s+4)&7);
+    setBit(px+2*(px/cell|0)+1,py+2*(py/cell|0)+1);
+  }
+  cy-=z;cx+=z;
+}
+for(t=s;t&3;t--)setBit(t,t);x=s+2*sc;y=s+2*sc;
+}
 
-let intro=element("div");
-intro.style="position:fixed;inset:0;font:20px monospace;display:flex;align-items:center;justify-content:center;text-align:center;user-select:none";
-intro.innerHTML="B y t e<br>A r m a d a ";
+function ascii(text){
+let out=[],len=text.length;
+for(let i=0;i<len;i++){
+  let a=text.charCodeAt(i),b=(i+1<len)?text.charCodeAt(i+1):0;
+  out.push(a>47&&a<58&&b>47&&b<58?(a-48)*10+b+82:(a+1));if(a>47&&a<58&&b>47&&b<58)i++;
+}
+return out;
+}
 
-let hold, timeout;
-intro.onpointerdown = e => {
- e.preventDefault();
- timeout = setTimeout(() => {
-   hold = true;
-   intro.remove();
-   handshake(); // Long press triggers PvP
- }, 600);
-};
+function make(tag,attr){
+let el = document.createElementNS(ns, tag);
+for (let k in attr) el.setAttribute(k, attr[k]);
+return el;
+}
 
-intro.onpointerup = _ => {
- clearTimeout(timeout);
- if (!hold) {
-   intro.remove();
-   game(); // Tap triggers PvC
+let ns="http://www.w3.org/2000/svg",mat=[1,0,0,1,2,2],size=Math.abs(dim)||256,path="";
+encode(text);
+let viewW=x+4,viewH=y+4;
+for(let j=y;j--;)for(let i=x,cnt=0;i--;){
+  if(grid[j][i])cnt++;
+  if(grid[j][i]&&!grid[j][i-1])path+=`M${i},${j}h${cnt}v1h-${cnt}v-1z`,cnt=0;
+}
+let svg=make("svg",{viewBox:`0 0 ${viewW} ${viewH}`,width:size*viewW/viewH|0,height:size,fill:"black","shape-rendering":"crispEdges"});
+svg.appendChild(make("path",{fill:"#fff",d:`M0,0v${viewH}h${viewW}V0H0Z`}));
+svg.appendChild(make("path",{transform:`matrix(${mat})`,d:path}));
+
+return svg;
+
+}//datamatrix
+
+
+
+
+
+
+function SDP(s) {
+ if (s.includes('\n')) {
+  const g = (r) => (s.match(r) || [])[1];
+  const lines = s.split('\n').map(l => l.trim());
+  const setup = lines.find(l => l.startsWith('a=setup:')) || '';
+  const type = setup.includes('active') ? 'answer' : setup.includes('actpass') ? 'offer' : '';
+  const fp = g(/^a=fingerprint:sha-256 (.+)/m)?.replace(/:/g, '');
+  const cand = (lines.find(l => l.startsWith('a=candidate:')) || '').slice(12).trim().replace(/\s+/g, ' ');
+  const sessionId = g(/^o=- (\d+)/m), ufrag = g(/^a=ice-ufrag:(.+)/m), pwd = g(/^a=ice-pwd:(.+)/m);
+  if (!type || !sessionId || !ufrag || !pwd || !fp || !cand) throw 'Invalid SDP';
+  return [type, sessionId, ufrag, pwd, fp, cand].join('|');
+ } else {
+  const [type, sessionId, ufrag, pwd, fp, cand] = s.split('|');
+  const setup = type === 'offer' ? 'actpass' : 'active';
+  return [
+   "v=0",
+   `o=- ${sessionId} 2 IN IP4 127.0.0.1`,
+   "s=-",
+   "t=0 0",
+   "a=group:BUNDLE 0",
+   "a=extmap-allow-mixed",
+   "a=msid-semantic: WMS *",
+   "m=application 9 UDP/DTLS/SCTP webrtc-datachannel",
+   "c=IN IP4 0.0.0.0",
+   `a=ice-ufrag:${ufrag}`,
+   `a=ice-pwd:${pwd}`,
+   "a=ice-options:trickle",
+   `a=fingerprint:sha-256 ${fp.match(/.{2}/g).join(':')}`,
+   `a=setup:${setup}`,
+   "a=mid:0",
+   "a=sctpmap:5000 webrtc-datachannel 1024",
+   `a=candidate:${cand}`,
+   "a=end-of-candidates"
+  ].join('\r\n') + '\r\n';
  }
- hold = false;
-};
-};
+}//sdp
+
+
+
+
+
+
 </script>
-</body></html>
