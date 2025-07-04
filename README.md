@@ -154,7 +154,7 @@ Technically, you could send a barcode to a remote user, but it's best suited for
 
 JavaScript has a built-in barcode *reader*, but not a generator. I originally considered QR Code, but even with a fixed version and error level, the logic is still 10k. This is due to **complex features** like multiple placement patterns, *masking with scoring and selection*, and *interleaving data across multiple blocks* with separate error correction.
 
-**DataMatrix has a much simpler structure**: fixed placement, no masking, and a single block, and I simplified it down to 1k by supporting only a single encoding mode.
+**DataMatrix has a much simpler structure**: fixed placement, no masking, and a single block, and I simplified it down to 1k, mostly by supporting only a single encoding mode.
 
 It supports a 2,000 byte payload, but anything above 200 is unreliable — **not because of the barcode generator or the `BarcodeDetector` API, but because my live camera pipeline is fragile and lacks the advanced image processing built into native phone scanners**.
 
