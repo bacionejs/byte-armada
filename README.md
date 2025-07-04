@@ -148,10 +148,14 @@ At one point, I used Messenger for the handshake and supported remote PvP via ST
 
 ## 📷 Barcode Handshake
 
-I settled on **barcodes** because it's the only handshake strategy that fits into the JS13K rules — although it **only works on Android Chrome**.  
+I settled on **barcodes** because it's the only handshake strategy that fits within the JS13K rules — although it **only works on Android Chrome**.
 
-Technically, you could send a barcode to a remote user, but it's best suited for face-to-face handshakes, so I dropped STUN support too, and now you must be on the same Wi-Fi.
+Technically, you could send a barcode to a remote user, but it's best suited for face-to-face handshakes. So I dropped STUN support as well, and now both peers must be on the same Wi-Fi.
 
-JavaScript has a built-in barcode *reader* but not a generator. I originally considered a QR code generator, but even after stripping it down to a fixed version and error level, the encoding logic was still over 30KB. This is because QR codes include **complex features** like multiple placement patterns, *masking with scoring and selection*, and *interleaving data across multiple blocks* with separate error correction. **DataMatrix has a much simpler structure** with fixed placement, no masking, and a single block, so the encoding logic is far smaller.
+JavaScript has a built-in barcode *reader*, but not a generator. I originally considered QR Code, but even with a fixed version and error level, the logic is still 10k. This is due to **complex features** like multiple placement patterns, *masking with scoring and selection*, and *interleaving data across multiple blocks* with separate error correction.
 
-It supports a 2,000-byte payload, but anything above 200 is unreliable — **not because of the barcode generator or the `BarcodeDetector` API, but because my live camera pipeline is fragile and lacks the Advanced Image Processing that built-in phone barcode scanners have**. RTC handshakes are 1,600 bytes, and compression only reduces that to 700. So, I implemented **SDP elision** to omit shared boilerplate, reducing the payload to 130 bytes. 🎉
+**DataMatrix has a much simpler structure**: fixed placement, no masking, and a single block, and I simplified it down to 1k by supporting only a single encoding mode.
+
+It supports a 2,000 byte payload, but anything above 200 is unreliable — **not because of the barcode generator or the `BarcodeDetector` API, but because my live camera pipeline is fragile and lacks the advanced image processing built into native phone scanners**.
+
+RTC handshakes are 1,600 bytes, and compression only brings that down to 700. So I implemented **SDP elision**, stripping out shared boilerplate, reducing the payload to just 130. 🎉
