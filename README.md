@@ -148,8 +148,10 @@ At one point, I used Messenger for the handshake and supported remote PvP via ST
 
 ## 📷 Barcode Handshake
 
-I settled on **barcodes** because it's the only handshake strategy that fits into the JS13K rules — although it **only works on Android Chrome**.
+I settled on **barcodes** because it's the only handshake strategy that fits into the JS13K rules — although it **only works on Android Chrome**.  
 
 Technically, you could send a barcode to a remote user, but it's best suited for face-to-face handshakes, so I dropped STUN support too, and now you must be on the same Wi-Fi.
 
-I originally considered QR codes, but even after stripping them down to a fixed version and error level, the encoding logic was still over 30KB. This is because QR codes include **complex features** like multiple placement patterns, *masking with scoring and selection*, and *interleaving data across multiple blocks* with separate error correction. **DataMatrix has a much simpler structure** with fixed placement, no masking, and a single block, so the encoding logic is far smaller. It supports a 2000-byte payload, but anything above 200 is error-prone with a tiny-code implementation. RTC handshakes are 1600 bytes, and compression only reduces it to 700. So, I implemented **SDP elision** to omit shared boilerplate, thus reducing the payload to 130 bytes. 🎉
+JavaScript has a built-in barcode *reader* but not a generator. I originally considered a QR code generator, but even after stripping it down to a fixed version and error level, the encoding logic was still over 30KB. This is because QR codes include **complex features** like multiple placement patterns, *masking with scoring and selection*, and *interleaving data across multiple blocks* with separate error correction. **DataMatrix has a much simpler structure** with fixed placement, no masking, and a single block, so the encoding logic is far smaller.
+
+It supports a 2000-byte payload, but anything above 200 is error-prone with a tiny-code implementation. RTC handshakes are 1600 bytes, and compression only reduces that to 700. So, I implemented **SDP elision** to omit shared boilerplate, reducing the payload to 130 bytes. 🎉
