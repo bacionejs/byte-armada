@@ -160,6 +160,4 @@ It supports a 2,000 byte payload, but anything above 200 is unreliable — **not
 
 RTC handshakes are 1,600 bytes, and compression only brings that down to 700. So I implemented **SDP elision**, stripping out shared boilerplate, reducing the payload to just 130. 🎉
 
-> **Note:** The handshake is 3,604 bytes, including 1,069 bytes for the DataMatrix algorithm and an additional 85 bytes for my in-game code, totaling 3,689 bytes for me to support PvP.
->
-> All byte sizes in this README refer to their **zipped (compressed)** sizes.
+> **Note:** The handshake is 3,604 bytes, including 1,069 bytes for the DataMatrix algorithm and an additional 85 bytes for my in-game code, totaling **3,689** bytes for me to support PvP. (zipped sizes)
