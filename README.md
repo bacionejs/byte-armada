@@ -159,5 +159,3 @@ JavaScript has a built-in barcode *reader*, but not a *generator*. For the gener
 It supports a 2,000 byte payload, but anything above 200 is unreliable — **not because of the barcode generator or the `BarcodeDetector` API, but because my live camera pipeline is fragile and lacks the advanced image processing built into native phone scanners**.
 
 RTC handshakes (SDP) are 1,600 bytes, and compression only brings that down to 700. So I implemented **SDP elision**, stripping out shared boilerplate, reducing the payload to just 130. 🎉
-
-> **Note:** The handshake **code** is 3,604 bytes, including 1,069 bytes for the DataMatrix algorithm and an additional 85 bytes for my in-game code. 98% is just for the handshake! (zipped sizes)
