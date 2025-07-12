@@ -10,10 +10,10 @@
 ---
 
 Two modes:  
-- Player vs. Computer  
-- Player vs. Player  
+- Single Player  
+- Player versus Player (1v1) 
 
-For PvP, just long-press the intro screen and scan each other's phone, but it's only supported on Android Chrome and both players must be on the same wifi. 
+For 1v1, just long-press the intro screen and scan each other's phone, but it's only supported on Android Chrome and both players must be on the same wifi. 
 
 ---
 
@@ -134,17 +134,17 @@ Part of the problem is that when the game is constantly shooting, it ends up jus
 
 ---
 
-## 🥊 PvP
+## 🥊 1v1
 
-I wanted the option to have **player versus player** and spent an incredible amount of time figuring out ways to do the **communication handshake between two phones without requiring a server**.
+I wanted the option to have 1v1 and spent an incredible amount of time figuring out ways to do the **communication handshake between two phones without requiring a server**.
 
 For development testing, I used a server to pass the handshake back and forth. It was **delightfully smooth** and required no interaction from the user.
 
-With that set up, I could focus on testing player-to-player logic without worrying about the tedious details of the communication handshake.
+With that set up, I could focus on testing 1v1 logic without worrying about the tedious details of the communication handshake.
 
-But, after hammering out all the details of player-to-player logic, I had to switch to another strategy to be compliant.
+But, after hammering out all the details of 1v1 logic, I had to switch to another strategy to be compliant.
 
-At one point, I used Messenger for the handshake and supported remote PvP via STUN, but it was cumbersome and non-compliant.
+At one point, I used Messenger for the handshake and supported remote 1v1 via STUN, but it was cumbersome and non-compliant.
 
 ## 📷 Barcode Handshake
 
