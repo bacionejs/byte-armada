@@ -43,7 +43,7 @@ intro.onpointerup = _ => {
 function game(channel){
 element("style").textContent="*{position:fixed;margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;}body{background:black;}";
 let {floor,ceil,random,PI,abs,atan2,min}=Math;
-let level=0,W=min(innerWidth,innerHeight),mode=0,p=null,FPS=1,q=5,buckettime=20,cooldown=FPS,max=5,health=3,timers=[],scale=((W/q)/(FPS*buckettime));
+let level=0,W=min(innerWidth,innerHeight),mode=0,p=null,FPS=30,q=5,buckettime=20,cooldown=FPS,max=5,health=3,timers=[],scale=((W/q)/(FPS*buckettime));
 let can=element("canvas"),c=can.getContext("2d");can.width=can.height=W;can.addEventListener("pointerdown",e=>{mode?(mode=0,start(e)):click(e);});
 
 let blue={
@@ -90,6 +90,38 @@ if(!channel){
 timers.push(setInterval(update,1000/FPS));
 }
 
+let sound=Sound();
+
+function Particles(c){
+let list=[],life=FPS;
+return {
+create(x,y){
+for(let i=0;i<100;i++){
+  let a=random()*6.28,s=random()*4+1;
+  list.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life});
+}
+},
+update(){
+list=list.filter(p=>p.life-->0);
+for(let p of list){
+  p.x+=p.vx;
+  p.y+=p.vy;
+  p.vy+=0.1;
+}
+},
+draw(){
+for(let p of list){
+  c.fillStyle=`rgba(255,${random()*255},0,${p.life/60})`;
+  c.beginPath();
+  c.arc(p.x,p.y,2,0,6.28);
+  c.fill();
+}
+}
+};
+}
+
+let particles=Particles(c);
+
 function update(){
 c.clearRect(0,0,W,W);
 c.drawImage(background,0,0);
@@ -109,6 +141,13 @@ for(let [attacker,defender] of [[blue,red],[red,blue]]){
     }
   }
 }
+
+let explode = false;
+for(let i of [blue, red]){
+  i.entities.forEach(e=>{if(e.hp<=0){explode=true;particles.create(e.x,e.y);};}); 
+}
+if(explode) sound.explosion();
+
 for(let i of [blue,red]){
   i.entities=i.entities.filter(e=>e.hp>0&&e.y>0&&e.y<W);
 }
@@ -131,6 +170,8 @@ for(let [attacker,defender] of [[blue,red],[red,blue]]){
     a.angle=atan2(target.y-a.y,target.x-a.x)+PI/2;
     c.strokeStyle=attacker.laser;c.lineWidth=1;c.beginPath();c.moveTo(a.x,a.y);c.lineTo(target.x,target.y);c.stroke();
   }
+  particles.update();
+  particles.draw();
 }
 }
 
@@ -176,6 +217,51 @@ return g;
 function shape(array,gridsize=20,mirror=true){let p=new Path2D;for(let i of array){for(let x of mirror?[1,-1]:[1]){p.moveTo(x*i[0]/gridsize,i[1]/gridsize);for(let j=2;j<i.length;j+=2)p.lineTo(x*i[j]/gridsize,i[j+1]/gridsize);}}return p;}
 
 function rnd(b,a=0){return floor(random()*(b-a))+a;}
+
+function Sound(){
+let auc=new AudioContext();
+let aubrocket=noise(0.2);
+let aubexplosion=noise(1);
+
+function noise(seconds){
+let b=auc.createBuffer(1,auc.sampleRate*seconds,auc.sampleRate);
+b.getChannelData(0).forEach((_,i,a)=>a[i]=random()*2-1);
+return b;
+}
+
+function rocket(){
+let s=auc.createBufferSource();
+s.buffer=aubrocket;
+let gain=auc.createGain();
+gain.gain.value=0.3;
+s.connect(gain);
+gain.connect(auc.destination);
+s.start(0,0,s.buffer.duration);
+s.onended=function(){
+  s.disconnect();
+  gain.disconnect();
+};
+}
+
+function explosion(){
+let s=auc.createBufferSource();
+s.buffer=aubexplosion;
+let gain=auc.createGain();gain.gain.value=3;
+let filter=auc.createBiquadFilter();filter.type="lowpass";filter.frequency.value=300;
+gain.gain.linearRampToValueAtTime(0,auc.currentTime+1);
+s.connect(filter);
+filter.connect(gain);
+gain.connect(auc.destination);
+s.start(0,0,s.buffer.duration);
+s.onended=function(){
+  s.disconnect();
+  gain.disconnect();
+  filter.disconnect();
+};
+}
+
+return {rocket,explosion};
+}//end sound
 
 }//game
 
