@@ -1,6 +1,6 @@
 <h1><a href="https://bacionejs.github.io/byte-armada/" style="text-decoration: none; color: inherit;">Play</a></h1>
 
-[![Demo – Click to Play](README.jpg)](https://bacionejs.github.io/byte-armada/)
+[![Demo – Click to Play](README2.jpg)](https://bacionejs.github.io/byte-armada/)
 
 # **Byte Armada Instructions**
 
