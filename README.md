@@ -44,7 +44,7 @@ I wanted to distill down to the essence of the genre — the balancing act betwe
 
 To keep the controls simple, I decided that instead of swiping on a map to define a unit's route, they would just all **march across the screen like pawns in a chess game**.
 
-Instead of choosing distinct units with various abilities, you have **two abilities**, which, when combined, provide **25 combinations** of speed and laser range, which are inversely correlated to HP and hit power. With this, complex strategies can emerge from a simple interface.
+Instead of choosing distinct units with various abilities, you have **two abilities**, which, when combined, provide **25 combinations** of speed and range, which are inversely correlated to HP and hit power. With this, complex strategies can emerge from a simple interface.
 
 While the combined position/speed is unorthodox and non-intuitive, it does help in a fast-paced game by reducing the number of user interactions.
 
