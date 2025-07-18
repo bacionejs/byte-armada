@@ -43,7 +43,7 @@ intro.onpointerup = _ => {
 function game(channel){
 element("style").textContent="*{position:fixed;margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;}body{background:black;}";
 let {floor,ceil,random,PI,abs,atan2,min}=Math;
-let level=0,W=min(innerWidth,innerHeight),mode=0,p=null,FPS=30,q=5,buckettime=20,cooldown=FPS,max=5,health=3,timers=[],scale=((W/q)/(FPS*buckettime));
+let level=0,W=min(innerWidth,innerHeight),mode=0,p=null,FPS=1,q=5,buckettime=20,cooldown=FPS,max=5,health=3,timers=[],scale=((W/q)/(FPS*buckettime));
 let can=element("canvas"),c=can.getContext("2d");can.width=can.height=W;can.addEventListener("pointerdown",e=>{mode?(mode=0,start(e)):click(e);});
 
 let blue={
