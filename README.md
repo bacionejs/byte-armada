@@ -17,10 +17,11 @@ For 1v1, just long-press the intro screen and scan each other's phone, but it on
 
 ---
 
-To create a ship, **tap two** of the five zones:
+To create a ship, **click two** of the five zones:
 
-- Your **first tap** determines the ship’s **horizontal position and speed**
-- Your **second tap** determines the **range**
+- Your **first click** determines the ship’s **horizontal position and speed**
+- Your **second click** determines the **range**
+- For example, to create a fast ship in the lower-right, click upper-right.
 
 > With 5 zones for 🎚️ speed and 🎚️ range, there are **25 possible ship configurations**.
 
