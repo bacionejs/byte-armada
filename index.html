@@ -13,7 +13,7 @@ document.title="Byte Armada";
 
 let intro=element("div");
 intro.style="position:fixed;inset:0;font:20px monospace;display:flex;align-items:center;justify-content:center;text-align:center;user-select:none";
-intro.innerHTML="B y t e<br>A r m a d a";
+intro.innerHTML="B y t e<br>A r m a d a<br><br><br><br><br>";
 
 let hold, timeout;
 intro.onpointerdown = e => {
@@ -41,28 +41,28 @@ intro.onpointerup = _ => {
 
 
 function game(channel){
-element("style").textContent="*{position:fixed;margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;}body{background:blue;}";
+element("style").textContent="*{position:fixed;margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;}body{background:black;}";
 let {floor,ceil,random,PI,abs,atan2,min}=Math;
-let level=0,W=min(innerWidth,innerHeight),mode=0,p=null,FPS=30,q=5,buckettime=20,energy=100,cooldown=FPS,max=5,health=3,timers=[],scale=((W/q)/(FPS*buckettime));
+let level=0,W=min(innerWidth,innerHeight),mode=0,p=null,FPS=30,q=5,buckettime=20,cooldown=FPS,max=5,health=3,timers=[],scale=((W/q)/(FPS*buckettime));
 let can=element("canvas"),c=can.getContext("2d");can.width=can.height=W;can.addEventListener("pointerdown",e=>{mode?(mode=0,start(e)):click(e);});
 
 let blue={
   health,
+  speak:["You win!","one more","two more",],
   entities:[],laser:"blue",hull:gradient(c,[[0,"white"],[.08,"skyblue"],[.4,"blue"],[.6,"white"]]),
   shape:shape([[0,-10,2,-1,3,1,3,-2,5,-2,5,2,6,2,10,-1,9,5,3,10,3,7,2,6,2,7,0,7],[0,8,2,8,0,10]])
 };
 let red={
   health,
+  speak:["Try again!","red alert","yellow alert",],
   entities:[],laser:"red",hull:gradient(c,[[0,"white"],[.08,"gold"],[.4,"red"],[.6,"white"]]),
-  shape:shape([[0,-5,1,-5,3,2,3,-10,4,-10,4,-7,5,-6,5,-3,6,-2,6,-1,8,0,10,4,6,6,6,7,4,9,4,10,3,10,3,6,2,5,1,6,0,6],[0,7,1,7,0,9]])
+  shape:shape([[0,-1,1,-1,2,4,3,4,4,3,6,2,7,-1,8,-3,8,-7,9,-9,10,-7,10,4,8,7,6,8,3,10,2,7,0,7],[0,9,1,9,0,10]])
 };
-
-let celebration;
 reset();
 
 function reset(){
 timers.forEach(clearInterval);timers=[];
-c.fillStyle="black";c.fillRect(0,0,W,W);
+c.clearRect(0,0,W,W);
 mode=1;
 blue.entities=[];red.entities=[];
 c.strokeStyle="white";
@@ -75,44 +75,49 @@ if(blue.health){
 }
 if(level>25){
   level=0;
-  celebration=setInterval(()=>{
-    c.fillStyle=`hsl(${Math.random()*360},100%,${50+Math.random()*50}%)`;
-    c.beginPath();
-    for(let i=0;i<100;i++){
-      let x=random()*W,y=Math.random()*W,r=random()*5;
-      c.moveTo(x+r,y);
-      c.arc(x,y,r,0,6.28);
-    }
-    c.fill();
-  },100);
 }
 let x=(level-1)%5*(W/5),y=floor((level-1)/5)*(W/5);c.strokeRect(x,y,W/5,W/5);
 blue.health=red.health=health;
-blue.energy=red.energy=energy;
 }
 
 function start({clientX:x,clientY:y}){
-if(level==0)clearInterval(celebration);
 level=floor(x*5/W)+floor(y*5/W)*5+1;
-red.energy=energy+(level*10);
-if(channel){
-  blue.energy=energy+(level*10);
-}else{
-  bot();timers.push(setInterval(()=>{if(random()<0.8)bot();},5000));
+if(!channel){
+  for(let i=0;i<5;i++) bot();
+  let interval = 8000 - ((level - 1) * (5000 / 24));
+  timers.push(setInterval(()=>{bot();},interval));
 }
 timers.push(setInterval(update,1000/FPS));
 }
 
 function update(){
-c.fillStyle="black";c.fillRect(0,0,W,W);
-for(let i of [blue,red]){i.entities.forEach(e=>{e.y+=(e.speed*scale);});}
-for(let e of blue.entities){if(!e.passed&&e.y<0){e.passed=true;if(--red.health==0){reset();return;}}}
-for(let e of red.entities){if(!e.passed&&e.y>W){e.passed=true;if(--blue.health==0){reset();return;}}}
-for(let i of [blue,red]){i.entities=i.entities.filter(e=>e.hp>0&&e.y>=0&&e.y<=W);}
+c.clearRect(0,0,W,W);
 c.drawImage(background,0,0);
-for(let i of [blue,red]){c.fillStyle=i.hull;i.entities.forEach(e=>{
-  c.save();c.translate(e.x,e.y);c.rotate(e.angle);let s=(e.hp)*5+5;c.scale(s,s);c.fill(i.shape);c.restore();
-});}
+for(let i of [blue,red]){
+  i.entities.forEach(e=>{
+    e.y+=(e.speed*scale);
+  });
+}
+for(let [attacker,defender] of [[blue,red],[red,blue]]){
+  for(let a of attacker.entities){
+    if(a.y>0 && a.y<W)continue;
+    --defender.health;
+    speak(attacker.speak[defender.health]);
+    if(defender.health==0){
+      reset();
+      return;
+    }
+  }
+}
+for(let i of [blue,red]){
+  i.entities=i.entities.filter(e=>e.hp>0&&e.y>0&&e.y<W);
+}
+for(let i of [blue,red]){
+  c.strokeStyle=i.hull;
+  i.entities.forEach(e=>{
+    c.save();c.translate(e.x,e.y);c.rotate(e.angle);let s=(e.hp)*5+5;c.scale(s,s);c.lineWidth=1/s;c.stroke(i.shape);c.restore();
+  });
+}
 for(let [attacker,defender] of [[blue,red],[red,blue]]){
   for(let a of attacker.entities){
     if(a.cooldown>0){a.cooldown--;continue;}a.cooldown=cooldown;
@@ -121,16 +126,16 @@ for(let [attacker,defender] of [[blue,red],[red,blue]]){
       let dx=d.x-a.x,dy=d.y-a.y,dist=dx*dx+dy*dy;
       if(dist<=max&&dist<best){target=d;best=dist;}
     }
-    if(!target)continue;if(attacker.energy<a.range)continue;
-    attacker.energy--;target.hp-=1/a.range;
+    if(!target)continue;
+    target.hp-=1/a.range;
     a.angle=atan2(target.y-a.y,target.x-a.x)+PI/2;
     c.strokeStyle=attacker.laser;c.lineWidth=1;c.beginPath();c.moveTo(a.x,a.y);c.lineTo(target.x,target.y);c.stroke();
   }
 }
-status();
 }
 
-function bot(){let r=red.entities;if(r.length>=max)return;r.push(entity(rnd(W),0,PI,rnd(q+1,1),rnd(q+1,1)));}
+function bot(){let r=red.entities;r.push(entity(rnd(W),0,PI,rnd(q+1,1),rnd(q+1,1)));}
+//function bot(){let r=red.entities;r.push(entity(rnd(W),(W-125),PI,rnd(q+1,1),rnd(q+1,1)));}
 
 function entity(x,y,a,s,r){return {x,y,angle:a,speed:s,hp:q/abs(s),range:r};}
 
@@ -139,44 +144,28 @@ let b=blue.entities;
 if(b.length>=max)return;
 y=ceil((W-y)/(W/q));
 if(!p){p=entity(x,W,0,-y);
+//if(!p){p=entity(x,5,0,-y);
 }else{p.range=y;b.push(p);if(channel)channel.send(JSON.stringify([p.x,W,p.range,p.speed]));p=null;}
 }
 
 if(channel){channel.onmessage=e=>{let[x,w,r,s]=JSON.parse(e.data);red.entities.push(entity(x/w*W,0,PI,-s,r));}}
 
-function status(){
-let msg="\nShips: "+(5-blue.entities.length)+"/"+(5-red.entities.length)+"\nHealth:"+(blue.health)+"/"+(red.health)+"\nEnergy:"+(blue.energy)+"/"+(red.energy)+"\n\n";
-if(blue.entities.length<5){if(p){msg+="Select range";}else{msg+="Select position/speed";}}
-print(msg,c,"white");
-}
-
-function print(v,c,color="black",size=10,center=false){
-c.fillStyle=color;
-c.font=size+"px monospace";
-let lines=v.split("\n");
-let lineHeight=size*1.5;
-if(center){
-  c.textAlign="center";c.textBaseline="middle";
-  let totalHeight=lines.length*lineHeight;
-  let startY=W/2-totalHeight/2;
-  lines.forEach((line,i)=>{c.fillText(line,W/2,startY+i*lineHeight);});
-}else{
-  c.textAlign="left";c.textBaseline="top";
-  lines.forEach((line,i)=>{c.fillText(line,10,10+i*lineHeight);});
-}
-}
-
 let background=(()=>{
 let c=document.createElement("canvas").getContext("2d");c.canvas.width=c.canvas.height=W;
-let a=Array.from({length:(W**2)/3000},()=>{return {
-  x:Math.random()*W,y:Math.random()*W,r:Math.random()*3,
-  color:Array.from({length:3},()=>Math.floor(Math.random()*155+100)).reduce((a,v,i)=>a+(i?",":"")+v,"rgb(")+")"
-}});
-for(let i of a){c.beginPath();c.arc(i.x,i.y,i.r,0,PI*2);c.fillStyle=i.color;c.fill();}
-c.strokeStyle="white";c.lineWidth=1;for(let i=1;i<5;i++){let y=i*(W/5);c.beginPath();c.moveTo(W-5,y);c.lineTo(W,y);c.stroke();}
-let g=gradient(c,[[0,"blue"],[1,"transparent"]],"linear");c.fillStyle=g;c.fillRect(0,W-50,W,50);
+c.strokeStyle = "rgba(255,255,255,0.1)"; c.lineWidth = 1;
+for(let i=0;i<25;i++){let x=(i%5)*(W/5),y=floor(i/5)*(W/5);c.strokeRect(x,y,W/5,W/5);}
 return c.canvas;
 })();
+
+function speak(text){
+if(!window.speechSynthesis) return;
+let synth=window.speechSynthesis;
+let utter=new SpeechSynthesisUtterance(text);
+utter.pitch=1;
+utter.rate=0.8;
+utter.volume=1;
+synth.speak(utter);
+}
 
 function gradient(c,a,type="radial",coords){
 let g=type==="linear"?c.createLinearGradient(...(coords||[0,W,0,W-50])):c.createRadialGradient(...(coords||[0,0,0,0,0,1]));
@@ -187,6 +176,7 @@ return g;
 function shape(array,gridsize=20,mirror=true){let p=new Path2D;for(let i of array){for(let x of mirror?[1,-1]:[1]){p.moveTo(x*i[0]/gridsize,i[1]/gridsize);for(let j=2;j<i.length;j+=2)p.lineTo(x*i[j]/gridsize,i[j+1]/gridsize);}}return p;}
 
 function rnd(b,a=0){return floor(random()*(b-a))+a;}
+
 }//game
 
 
