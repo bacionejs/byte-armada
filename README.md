@@ -42,21 +42,11 @@ My inspiration for the game is the classic *Age of Empires*, where you have to m
 
 I wanted to distill down to the essence of the genre — the balancing act between agility and strength, hit power and firepower — and make it with a simple interface.
 
-Instead of choosing distinct units with various abilities, you have **two abilities**, which, when combined, provide **25 combinations** of speed and laser range, which are inversely correlated to HP and hit power.
-
 To keep the controls simple, I decided that instead of swiping on a map to define a unit's route, they would just all **march across the screen like pawns in a chess game**.
 
----
+Instead of choosing distinct units with various abilities, you have **two abilities**, which, when combined, provide **25 combinations** of speed and laser range, which are inversely correlated to HP and hit power. With this, complex strategies can emerge from a simple interface.
 
-## 🧠 UI and Controls
-
-My main challenge for unit selection was **reducing the amount of UI clutter** and user interaction required to select a unit type.
-
-The minimum is three interactions: two are for your abilities and one is for your position.
-
-But I didn't like having to perform three clicks in a fast-paced game.
-
-So I **combined position with speed**. And while it is unorthodox and non-intuitive, it does reduce the number of user interactions.
+While the combined position/speed is unorthodox and non-intuitive, it does help in a fast-paced game by reducing the number of user interactions.
 
 ---
 
@@ -66,38 +56,24 @@ You're limited to **five units at a time** on the board.
 
 With each level the enemy spawns faster. You can **skip levels** if you aren't challenged enough.
 
-The delightful part of the design is how **complex strategies can emerge from a simple interface**.
-
 ---
 
 ## ✏️ Art and Visuals
 
-Usually, I design very simple vector shapes. But I wanted my ships this time to be a little more interesting.
+I created [Vector Bay](//github.com/bacionejs/vectorbay) for building symmetrical ships.
 
-With simple shapes, I can determine the points in my head. But for this, I needed a drawing tool and I couldn't find one which met my needs. Thus, [Vector Bay](//github.com/bacionejs/vectorbay) was born.
-
-Since I planned on making symmetrical ships, I realized that I only needed to **draw half a ship, then mirror it**.
-
-I don't like how real-time strategy games put health bars and energy bars above their characters. It clutters the UI. So, as a strategy to indicate a ship's HP, **they become smaller**.
+As a strategy to reduce UI clutter
+- ship size indicates HP
+- Speech api indicates status
 
 ---
 
 ## 🔫 Lasers and Combat
 
-Initially, I wanted to make the laser have some movement, but this would have required leading the target and perhaps calculating hits.
-
-But since I planned on **every shot being perfect**, that really wasn't necessary. And the amount of code just wasn't worth it.
-
-So I switched to **instantaneous lasers** that didn't even have any state and completely **decoupled the visual of the laser from the internal logic**.
+The laser visual is decoupled from the internal logic.
 
 > The internal logic says: *find the closest target in range and affect it*.  
 > And as an aside, show a line between the two.
-
----
-
-## 🧠 AI
-
-I spent a lot of time thinking about AI for the enemy, but in the end a **one-liner with random variables was sufficient**.
 
 ---
 
