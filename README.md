@@ -13,23 +13,14 @@ Two modes:
 - Single Player  
 - Player versus Player (1v1) 
 
-For 1v1, just long-press the intro screen and scan each other's phone, but it only works on Android Chrome and both players must be on the same wifi. 
+For 1v1, just long-press the intro screen and scan each other's phone, but it only works with Android Chrome on the same wifi. 
 
 ---
 
-To create a ship, **tap twice**:
+To create a ship, **tap two** of the five zones:
 
-- The **first tap** sets **position and speed**.  
-  Example: To create a fast ship starting from the lower right, tap in the upper right.
-- The **second tap** sets the **range**.  
-  The horizontal position of the second tap **doesn’t matter**.
-
----
-
-There are **five zones**:
-
-- Your **first tap** determines the ship’s **horizontal position and speed** based on the zone you tapped.
-- Your **second tap** determines the **range**, also based on the zone.
+- Your **first tap** determines the ship’s **horizontal position and speed**
+- Your **second tap** determines the **range**
 
 > With 5 zones for 🎚️ speed and 🎚️ range, there are **25 possible ship configurations**.
 
