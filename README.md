@@ -26,8 +26,7 @@ To create a ship, **tap twice**:
 
 ---
 
-There are **five invisible zones**, indicated by tick marks on the **right side**.  
-You **don’t click the tick marks**—they just show where the zones are.
+There are **five zones**:
 
 - Your **first tap** determines the ship’s **horizontal position and speed** based on the zone you tapped.
 - Your **second tap** determines the **range**, also based on the zone.
@@ -71,11 +70,9 @@ So I **combined position with speed**. And while it is unorthodox and non-intuit
 
 ## ⚡ Resource Management
 
-Resource management mainly consists of **one stat: energy**.
+You're limited to **five units at a time** on the board.
 
-But also, you're limited to **five units at a time** on the board.
-
-With each level the enemy gets more energy. You can **skip levels** if you aren't challenged enough.
+With each level the enemy spawns faster. You can **skip levels** if you aren't challenged enough.
 
 The delightful part of the design is how **complex strategies can emerge from a simple interface**.
 
@@ -88,8 +85,6 @@ Usually, I design very simple vector shapes. But I wanted my ships this time to 
 With simple shapes, I can determine the points in my head. But for this, I needed a drawing tool and I couldn't find one which met my needs. Thus, [Vector Bay](//github.com/bacionejs/vectorbay) was born.
 
 Since I planned on making symmetrical ships, I realized that I only needed to **draw half a ship, then mirror it**.
-
-I tried many strategies for skinning the ships, but found that a **simple radial gradient** got the most bang for my buck.
 
 I don't like how real-time strategy games put health bars and energy bars above their characters. It clutters the UI. So, as a strategy to indicate a ship's HP, **they become smaller**.
 
@@ -114,23 +109,11 @@ I spent a lot of time thinking about AI for the enemy, but in the end a **one-li
 
 ---
 
-## 🌌 Backgrounds
-
-I experimented with many background ideas: shooting stars, moving stars, blinking stars, terrain...
-
-But in the end I just chose a **blue mist at the bottom** and some stars of different color and different size — for a total of **five lines of code**.
-
----
-
 ## 🔇 Sound
-
-I really wanted to put sound into the game.
 
 Last year's game had voice, explosions, laser sounds, and music.
 
-But after many long sidequests, I decided **not to have anything**.
-
-Part of the problem is that when the game is constantly shooting, it ends up just being a droning sound — almost as if you could have put a backtrack on the game without it tied to logic.
+But, part of the problem is that when the game is constantly shooting, it ends up just being a droning sound — almost as if you could have put a backtrack on the game without it tied to logic.
 
 ---
 
