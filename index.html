@@ -40,21 +40,26 @@ intro.onpointerup = _ => {
 
 
 
-function game(channel){
+function game(channel,side){
 element("style").textContent="*{position:fixed;margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;}body{background:black;}";
 let {floor,ceil,random,PI,abs,atan2,min}=Math;
-let level=0,W=min(innerWidth,innerHeight),mode=0,p=null,FPS=30,q=5,buckettime=20,cooldown=FPS,max=5,health=3,timers=[],scale=((W/q)/(FPS*buckettime));
+let level=0,W=min(innerWidth,innerHeight),mode=0,p=null,FPS=30,q=5,buckettime=20,cooldown=FPS,max=5,health=1,timers=[],scale=((W/q)/(FPS*buckettime));
 let can=element("canvas"),c=can.getContext("2d");can.width=can.height=W;can.addEventListener("pointerdown",e=>{mode?(mode=0,start(e)):click(e);});
 
+let sound=Sound();
+let particles=Particles(c);
+
+
 let blue={
+  id:0,
   health,
-  speak:["You win!","one more","two more",],
+  speak:"Captain! You are so awesome. I have never seen such exquisite strategy. Stellar performance! Oh my god, love you so much!",
   entities:[],laser:"blue",hull:gradient(c,[[0,"white"],[.08,"skyblue"],[.4,"blue"],[.6,"white"]]),
   shape:shape([[0,-10,2,-1,3,1,3,-2,5,-2,5,2,6,2,10,-1,9,5,3,10,3,7,2,6,2,7,0,7],[0,8,2,8,0,10]])
 };
 let red={
   health,
-  speak:["Try again!","red alert","yellow alert",],
+  speak:"Try again!",
   entities:[],laser:"red",hull:gradient(c,[[0,"white"],[.08,"gold"],[.4,"red"],[.6,"white"]]),
   shape:shape([[0,-1,1,-1,2,4,3,4,4,3,6,2,7,-1,8,-3,8,-7,9,-9,10,-7,10,4,8,7,6,8,3,10,2,7,0,7],[0,9,1,9,0,10]])
 };
@@ -83,80 +88,68 @@ blue.health=red.health=health;
 function start({clientX:x,clientY:y}){
 level=floor(x*5/W)+floor(y*5/W)*5+1;
 if(!channel){
-  for(let i=0;i<5;i++) bot();
+  for(let i=0;i<3;i++) bot();
   let interval = 8000 - ((level - 1) * (5000 / 24));
   timers.push(setInterval(()=>{bot();},interval));
 }
 timers.push(setInterval(update,1000/FPS));
 }
 
-let sound=Sound();
-
-function Particles(c){
-let list=[],life=FPS;
-return {
-create(x,y){
-for(let i=0;i<100;i++){
-  let a=random()*6.28,s=random()*4+1;
-  list.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life});
-}
-},
-update(){
-list=list.filter(p=>p.life-->0);
-for(let p of list){
-  p.x+=p.vx;
-  p.y+=p.vy;
-  p.vy+=0.1;
-}
-},
-draw(){
-for(let p of list){
-  c.fillStyle=`rgba(255,${random()*255},0,${p.life/60})`;
-  c.beginPath();
-  c.arc(p.x,p.y,2,0,6.28);
-  c.fill();
-}
-}
-};
-}
-
-let particles=Particles(c);
 
 function update(){
 c.clearRect(0,0,W,W);
 c.drawImage(background,0,0);
+
+//move
 for(let i of [blue,red]){
   i.entities.forEach(e=>{
     e.y+=(e.speed*scale);
   });
 }
+
+//win
 for(let [attacker,defender] of [[blue,red],[red,blue]]){
   for(let a of attacker.entities){
     if(a.y>0 && a.y<W)continue;
     --defender.health;
-    speak(attacker.speak[defender.health]);
-    if(defender.health==0){
+    if(defender.health<=0){
+      speak(attacker.speak);
       reset();
       return;
     }
   }
 }
 
+//destroy
 let explode = false;
 for(let i of [blue, red]){
-  i.entities.forEach(e=>{if(e.hp<=0){explode=true;particles.create(e.x,e.y);};}); 
+  i.entities.forEach(e=>{
+    if(e.hp<=0){
+      if(channel){
+        e.delete=true;
+        channel.send(JSON.stringify(e));
+      }
+      explode=true;
+      particles.create(e.x,e.y);
+    }
+  }); 
 }
 if(explode) sound.explosion();
 
+//remove
 for(let i of [blue,red]){
   i.entities=i.entities.filter(e=>e.hp>0&&e.y>0&&e.y<W);
 }
+
+//draw
 for(let i of [blue,red]){
   c.strokeStyle=i.hull;
   i.entities.forEach(e=>{
-    c.save();c.translate(e.x,e.y);c.rotate(e.angle);let s=(e.hp)*5+5;c.scale(s,s);c.lineWidth=1/s;c.stroke(i.shape);c.restore();
+    c.save();c.translate(e.x,e.y);c.rotate(e.angle);let s=W/100*e.hp+5;c.scale(s,s);c.lineWidth=1/s;c.stroke(i.shape);c.restore();
   });
 }
+
+//shoot
 for(let [attacker,defender] of [[blue,red],[red,blue]]){
   for(let a of attacker.entities){
     if(a.cooldown>0){a.cooldown--;continue;}a.cooldown=cooldown;
@@ -170,26 +163,60 @@ for(let [attacker,defender] of [[blue,red],[red,blue]]){
     a.angle=atan2(target.y-a.y,target.x-a.x)+PI/2;
     c.strokeStyle=attacker.laser;c.lineWidth=1;c.beginPath();c.moveTo(a.x,a.y);c.lineTo(target.x,target.y);c.stroke();
   }
-  particles.update();
   particles.draw();
 }
-}
+}//update
 
-function bot(){let r=red.entities;r.push(entity(rnd(W),0,PI,rnd(q+1,1),rnd(q+1,1)));}
+function entity(x,y,a,s,r,side,id){return {x,y,angle:a,speed:s,hp:q/abs(s),range:r,side,id};}
+
 //function bot(){let r=red.entities;r.push(entity(rnd(W),(W-125),PI,rnd(q+1,1),rnd(q+1,1)));}
-
-function entity(x,y,a,s,r){return {x,y,angle:a,speed:s,hp:q/abs(s),range:r};}
+function bot(){let r=red.entities;r.push(entity(rnd(W),0,PI,rnd(q+1,1),rnd(q+1,1)));}
 
 function click({clientX:x,clientY:y}){
 let b=blue.entities;
 if(b.length>=max)return;
 y=ceil((W-y)/(W/q));
-if(!p){p=entity(x,W,0,-y);
-//if(!p){p=entity(x,5,0,-y);
-}else{p.range=y;b.push(p);if(channel)channel.send(JSON.stringify([p.x,W,p.range,p.speed]));p=null;}
+if(!p){
+  //p=entity(x,5,0,-y);
+  p=entity(x,W,0,-y);
+}else{
+  p.range=y;
+  b.push(p);
+  if(channel){
+    channel.send(JSON.stringify({
+      x: p.x,
+      w: W,
+      range: p.range,
+      speed: p.speed,
+      side: p.side = side,
+      id: p.id = blue.id++
+    }));
+  }
+  p=null;
+}
 }
 
-if(channel){channel.onmessage=e=>{let[x,w,r,s]=JSON.parse(e.data);red.entities.push(entity(x/w*W,0,PI,-s,r));}}
+if(channel){channel.onmessage=e=>{
+  let msg = JSON.parse(e.data);
+  if(msg.delete === true){
+    for(let team of [red, blue]){
+      let i = team.entities.findIndex(e => e.id === msg.id && e.side === msg.side);
+      if(i !== -1){team.entities.splice(i, 1);break;}
+    }
+    return;
+  }
+  red.entities.push(entity(msg.x / msg.w * W, 0, PI, -msg.speed, msg.range, msg.side, msg.id));
+}}
+
+
+
+
+
+
+
+
+
+
 
 let background=(()=>{
 let c=document.createElement("canvas").getContext("2d");c.canvas.width=c.canvas.height=W;
@@ -202,9 +229,9 @@ function speak(text){
 if(!window.speechSynthesis) return;
 let synth=window.speechSynthesis;
 let utter=new SpeechSynthesisUtterance(text);
-utter.pitch=1;
-utter.rate=0.8;
-utter.volume=1;
+//utter.pitch=1;
+//utter.rate=0.8;
+//utter.volume=1;
 synth.speak(utter);
 }
 
@@ -220,27 +247,12 @@ function rnd(b,a=0){return floor(random()*(b-a))+a;}
 
 function Sound(){
 let auc=new AudioContext();
-let aubrocket=noise(0.2);
 let aubexplosion=noise(1);
 
 function noise(seconds){
 let b=auc.createBuffer(1,auc.sampleRate*seconds,auc.sampleRate);
 b.getChannelData(0).forEach((_,i,a)=>a[i]=random()*2-1);
 return b;
-}
-
-function rocket(){
-let s=auc.createBufferSource();
-s.buffer=aubrocket;
-let gain=auc.createGain();
-gain.gain.value=0.3;
-s.connect(gain);
-gain.connect(auc.destination);
-s.start(0,0,s.buffer.duration);
-s.onended=function(){
-  s.disconnect();
-  gain.disconnect();
-};
 }
 
 function explosion(){
@@ -260,8 +272,31 @@ s.onended=function(){
 };
 }
 
-return {rocket,explosion};
+return {explosion};
 }//end sound
+
+function Particles(c){
+let list=[],life=FPS;
+return{
+create(x,y){
+  for(let i=0;i<100;i++){
+    let a=random()*6.28,s=random()*4+1;
+    list.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life});
+  }
+},
+draw(){
+  list=list.filter(p=>p.life-->0);
+  for(let p of list){
+    p.x+=p.vx;
+    p.y+=p.vy+=.1;
+    c.fillStyle="rgba(255,"+(random()*255)+",0,"+(p.life/FPS)+")";
+    c.beginPath();
+    c.arc(p.x,p.y,2,0,6.28);
+    c.fill();
+  }
+}
+};
+}
 
 }//game
 
@@ -320,7 +355,7 @@ peer.onicecandidate=e=>{
   if(e.candidate)offercandidates.push(e.candidate.toJSON());
 };
 channel=peer.createDataChannel("x");
-channel.onopen=()=>launchgame();
+channel.onopen=()=>launchgame("answer");
 let offer=await peer.createOffer();
 await peer.setLocalDescription(offer);
 await new Promise(r=>setTimeout(r,1000));
@@ -352,7 +387,7 @@ if(type==="offer"){
   peer=new RTCPeerConnection();
   peer.ondatachannel=e=>{
     channel=e.channel;
-    channel.onopen=()=>launchgame();
+    channel.onopen=()=>launchgame("offer");
   };
   await peer.setRemoteDescription({type:"offer",sdp:SDP(sdp)});
   const answerCandidates=[];
@@ -418,11 +453,11 @@ box.insertBefore(lastbarcode=svg,canvas);
 
 
 
-function launchgame(){
+function launchgame(side){
 if(stream)for(const track of stream.getTracks())track.stop();
 stream=null;
 for(const el of [...document.body.children])if(el.tagName!=="SCRIPT")el.remove();
-game(channel); // ✅ Handshake success 🎉 Game on! 🎮
+game(channel,side); // ✅ Handshake success 🎉 Game on! 🎮
 }
 
 
