@@ -16,6 +16,7 @@ Two modes:
 For 1v1, just long-press the intro screen and scan each other's phone, but it only works with Android Chrome on the same wifi. 
 
 ---
+Objective: get a ship to the other side.
 
 To create a ship, **click two** of the five zones:
 
