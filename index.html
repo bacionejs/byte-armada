@@ -70,6 +70,12 @@ timers.forEach(clearInterval);timers=[];
 c.clearRect(0,0,W,W);
 mode=1;
 blue.entities=[];red.entities=[];
+if(channel){
+  mode=0;
+  blue.health=red.health=health;
+  start();
+  return;
+}
 c.strokeStyle="white";
 for(let i=0;i<25;i++){let x=(i%5)*(W/5),y=floor(i/5)*(W/5);c.strokeRect(x,y,W/5,W/5);c.fillStyle="white";c.textAlign="center";c.textBaseline="middle";c.font=W/35+"px monospace";c.fillText("lv"+(i+1),x+W/10,y+W/10);}
 if(blue.health){
@@ -85,8 +91,11 @@ let x=(level-1)%5*(W/5),y=floor((level-1)/5)*(W/5);c.strokeRect(x,y,W/5,W/5);
 blue.health=red.health=health;
 }
 
-function start({clientX:x,clientY:y}){
-level=floor(x*5/W)+floor(y*5/W)*5+1;
+function start(p){
+if(p){
+  let {clientX:x,clientY:y}=p;
+  level=floor(x*5/W)+floor(y*5/W)*5+1;
+}
 if(!channel){
   for(let i=0;i<3;i++) bot();
   let interval = 8000 - ((level - 1) * (5000 / 24));
