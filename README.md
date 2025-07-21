@@ -71,15 +71,6 @@ As a strategy to reduce UI clutter
 
 ---
 
-## 🔫 Lasers and Combat
-
-The laser visual is decoupled from the internal logic.
-
-> The internal logic says: *find the closest target in range and affect it*.  
-> And as an aside, show a line between the two.
-
----
-
 ## 🥊 1v1
 
 I wanted the option to have 1v1 and spent an incredible amount of time figuring out ways to do the **communication handshake between two phones without requiring a server**.
