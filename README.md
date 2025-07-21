@@ -51,10 +51,6 @@ Instead of choosing distinct units with various abilities, you have **two abilit
 
 While the combined position/speed is unorthodox and non-intuitive, it does help in a fast-paced game by reducing the number of user interactions.
 
----
-
-## ⚡ Resource Management
-
 You're limited to **five units at a time** on the board.
 
 With each level the enemy spawns faster. You can **skip levels** if you aren't challenged enough.
