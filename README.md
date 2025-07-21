@@ -55,15 +55,15 @@ You're limited to **five units at a time** on the board.
 
 With each level the enemy spawns faster. You can **skip levels** if you aren't challenged enough.
 
----
-
-## ✏️ Art and Visuals
-
-I created [Vector Bay](//github.com/bacionejs/vectorbay) for building symmetrical ships.
-
 As a strategy to reduce UI clutter
 - ship size indicates HP
 - Speech api indicates status
+
+---
+
+## ✏️ Art
+
+I created [Vector Bay](//github.com/bacionejs/vectorbay) for building symmetrical ships.
 
 ---
 
