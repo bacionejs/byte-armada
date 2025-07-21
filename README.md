@@ -16,7 +16,10 @@ Two modes:
 For 1v1, just long-press the intro screen and scan each other's phone, but it only works with Android Chrome on the same wifi. 
 
 ---
+
 Objective: get a ship to the other side.
+
+---
 
 To create a ship, **click two** of the five zones:
 
@@ -51,7 +54,7 @@ To reduce UI clutter, instead of ugly health bars over each unit, ship size indi
 
 To reduce interactions, there is no route swiping, and position/speed are combined in the first click - unorthodox and non-intuitive, but it does help in a fast-paced game.
 
-Instead of choosing distinct units with various abilities, you have **two abilities**, which, when combined, provide **25 combinations** of speed and range, which are inversely correlated to HP and hit power. With this, complex strategies can emerge from a simple interface.
+To reduce UI complexity, instead of choosing distinct units with various abilities, you have **two abilities**, which, when combined, provide **25 combinations** of speed and range, which are inversely correlated to HP and hit power. With this, complex strategies can emerge from a simple interface.
 
 ---
 
