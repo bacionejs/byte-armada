@@ -67,19 +67,11 @@ I created [Vector Bay](//github.com/bacionejs/vectorbay) for building symmetrica
 
 ---
 
-## 🥊 1v1
+## 📷 Barcode Handshake
 
 I wanted the option to have 1v1 and spent an incredible amount of time figuring out ways to do the **communication handshake between two phones without requiring a server**.
 
-For development testing, I used a server to pass the handshake back and forth. It was **delightfully smooth** and required no interaction from the user.
-
-With that set up, I could focus on testing 1v1 logic without worrying about the tedious details of the communication handshake.
-
-But, after hammering out all the details of 1v1 logic, I had to switch to another strategy to be compliant.
-
 At one point, I used Messenger for the handshake and supported remote 1v1 via STUN, but it was cumbersome and non-compliant.
-
-## 📷 Barcode Handshake
 
 I settled on **barcodes** because it's the only handshake strategy that fits within the JS13K rules — although it **only works on Android Chrome**.
 
