@@ -80,14 +80,6 @@ The laser visual is decoupled from the internal logic.
 
 ---
 
-## 🔇 Sound
-
-Last year's game had voice, explosions, laser sounds, and music.
-
-But, part of the problem is that when the game is constantly shooting, it ends up just being a droning sound — almost as if you could have put a backtrack on the game without it tied to logic.
-
----
-
 ## 🥊 1v1
 
 I wanted the option to have 1v1 and spent an incredible amount of time figuring out ways to do the **communication handshake between two phones without requiring a server**.
