@@ -230,7 +230,7 @@ if(channel){channel.onmessage=e=>{
 
 let background=(()=>{
 let c=document.createElement("canvas").getContext("2d");c.canvas.width=c.canvas.height=W;
-c.strokeStyle = "rgba(255,255,255,0.1)"; c.lineWidth = 1;
+c.strokeStyle = "rgba(0,255,0,0.1)";
 for(let i=0;i<25;i++){let x=(i%5)*(W/5),y=floor(i/5)*(W/5);c.strokeRect(x,y,W/5,W/5);}
 return c.canvas;
 })();
