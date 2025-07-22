@@ -127,29 +127,25 @@ for(let [attacker,defender] of [[blue,red],[red,blue]]){
   }
 }
 
-//destroy
-let explode = false;
-for(let i of [blue, red]){
-  i.entities.forEach(e=>{
-    if(e.hp<=0){
-      if(channel){
-        e.delete=true;
-        channel.send(JSON.stringify(e));
+//force deletion in case desynced 
+if(channel){
+  for(let i of [blue,red]){
+    i.entities.forEach(e=>{
+      if(e.hp<=0){
+        channel.send(JSON.stringify({...e, delete: true}));
       }
-      explode=true;
-      c.save();
-      c.translate(e.x,e.y);
-      c.fillStyle="gold";
-      c.fill(shape([Array.from({length:40},()=>rnd(20*2)-20)],1,false));
-      c.restore();
-    }
-  }); 
+    }); 
+  }
 }
-if(explode) sound.explosion();
+
+//explosion
+for(let i of [blue,red]){
+  i.entities.filter(e=>e.hp<=0 || e.delete===true).forEach(e=>explode(e));
+}
 
 //remove
 for(let i of [blue,red]){
-  i.entities=i.entities.filter(e=>e.hp>0&&e.y>0&&e.y<W);
+  i.entities=i.entities.filter(e=>e.hp>0 && e.y>0 && e.y<W && e.delete!==true);
 }
 
 //draw
@@ -206,18 +202,35 @@ if(!p){
 }
 }
 
-if(channel){channel.onmessage=e=>{
-  let msg = JSON.parse(e.data);
-  if(msg.delete === true){
-    for(let team of [red, blue]){
-      let i = team.entities.findIndex(e => e.id === msg.id && e.side === msg.side);
-      if(i !== -1){team.entities.splice(i, 1);break;}
-    }
-    return;
-  }
-  red.entities.push(entity(msg.x / msg.w * W, 0, PI, -msg.speed, msg.range, msg.side, msg.id));
-}}
+function explode(target){
+c.save();
+c.translate(target.x, target.y);
+c.fillStyle = "gold";
+c.fill(shape([Array.from({ length: 40 }, () => rnd(40) - 20)], 1, false));
+c.restore();
+sound.explosion();
+}
 
+if (channel) {
+  channel.onmessage = e => {
+    let msg = JSON.parse(e.data);
+    //force deletion in case desynced 
+    if (msg.delete === true) {
+      ([red, blue].flatMap(t => t.entities).find(e => e.id === msg.id && e.side === msg.side) || {}).delete = true;
+      return;
+    }
+    //add
+    red.entities.push(entity(
+      msg.x / msg.w * W,
+      0,
+      PI,
+      -msg.speed,
+      msg.range,
+      msg.side,
+      msg.id
+    ));
+  };
+}
 
 
 
@@ -295,7 +308,6 @@ function handshake(){
 let peer,channel,stream=null;
 let lastbarcode=null;
 let lastscanned="";
-let isanswerer=false;
 
 const box=element("div");
 box.style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:black;gap:10px;padding:10px;overflow:auto";
@@ -314,10 +326,20 @@ const overlay=element("div");
 overlay.style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;font:20px sans-serif;color:white;background:rgba(0,128,0,0.8);z-index:999;opacity:0;transition:opacity 0.3s";
 overlay.textContent="SCAN OK!";
 
+
+
+
+
+
+
+
+
+
+//camera
 navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}}).then(async s=>{
 stream=video.srcObject=s;
 await video.play();
-const detector=new BarcodeDetector({formats:["data_matrix"]});
+const detector=new window.BarcodeDetector({formats:["data_matrix"]});
 const loop=async ()=>{
   canvas.width=video.videoWidth;
   canvas.height=video.videoHeight;
@@ -333,19 +355,27 @@ const loop=async ()=>{
 requestAnimationFrame(loop);
 });
 
+
+
+
+
+
+
+
+
+
+//initial barcode
 (async function(){
-let offercandidates=[];
-peer=new RTCPeerConnection();
-peer.onicecandidate=e=>{
-  if(e.candidate)offercandidates.push(e.candidate.toJSON());
-};
-channel=peer.createDataChannel("x");
-channel.onopen=()=>launchgame("answer");
-let offer=await peer.createOffer();
-await peer.setLocalDescription(offer);
-await new Promise(r=>setTimeout(r,1000));
-let sdpText=SDP(peer.localDescription.sdp);
-displaybarcode(JSON.parse(JSON.stringify({sdp:sdpText,candidates:offercandidates})).sdp);
+  peer = new RTCPeerConnection();
+  channel = peer.createDataChannel("x");
+  channel.onopen = () => launchgame("a");
+  await peer.setLocalDescription(await peer.createOffer());
+  await new Promise(resolve => {
+    peer.onicecandidate = e => {
+      if (e.candidate) resolve();
+    };
+  });
+  displaybarcode(SDP(peer.localDescription.sdp));
 })();
 
 
@@ -358,91 +388,38 @@ displaybarcode(JSON.parse(JSON.stringify({sdp:sdpText,candidates:offercandidates
 
 
 
-async function processbarcode(text){
-if(text===lastscanned)return;
-lastscanned=text;
-if(text.length<10)return;
-overlay.style.opacity=1;
-setTimeout(()=>overlay.style.opacity=0,1000);
-const json=text.trim().startsWith("{")?text:JSON.stringify({sdp:text,candidates:[]});
-const {sdp}=JSON.parse(json);
-const type=sdp.startsWith("v=0")||sdp.includes("\n")?SDP(sdp).split('|')[0]:sdp.split('|')[0];
-if(type==="offer"){
-  isanswerer=true;
-  peer=new RTCPeerConnection();
-  peer.ondatachannel=e=>{
-    channel=e.channel;
-    channel.onopen=()=>launchgame("offer");
-  };
-  await peer.setRemoteDescription({type:"offer",sdp:SDP(sdp)});
-  const answerCandidates=[];
-  peer.onicecandidate=e=>{
-    if(e.candidate)answerCandidates.push(e.candidate.toJSON());
-  };
-  const answer=await peer.createAnswer();
-  await peer.setLocalDescription(answer);
-  await new Promise(r=>setTimeout(r,1000));
-  const compact=SDP(peer.localDescription.sdp);
-  displaybarcode(JSON.parse(JSON.stringify({sdp:compact,candidates:answerCandidates})).sdp);
-}else if(type==="answer"&&!isanswerer){
-  await peer.setRemoteDescription({type:"answer",sdp:SDP(sdp)});
-  const {candidates}=JSON.parse(json);
-  for(let c of candidates)await peer.addIceCandidate(c);
-}
-}
-
-
-
-
-
-
-
-
-
-
-
-function displaybarcode(text){
-if(lastbarcode)lastbarcode.remove();
-let d=(Math.min(screen.width,screen.height)<600)
-  ?Math.round(window.innerWidth*0.7)
-  :Math.round(2*96*window.devicePixelRatio);
-let [a,size]=datamatrix(text);
-let pad=2,w=size+pad*2,path="";
-for(let j=size;j--;)for(let i=size,c=0;i--;){
-  if(a[j][i])c++;
-  if(a[j][i]&&!a[j][i-1])path+="M"+i+","+j+"h"+c+"v1h-"+c+"v-1z",c=0;
-}
-let svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
-svg.setAttribute("viewBox","0 0 "+w+" "+w);
-svg.setAttribute("width",d);
-svg.setAttribute("height",d);
-svg.setAttribute("fill","black");
-let bg=document.createElementNS(svg.namespaceURI,"path");
-bg.setAttribute("fill","white");
-bg.setAttribute("d","M0,0v"+w+"h"+w+"V0H0Z");
-svg.insertBefore(bg,null);
-let fg=document.createElementNS(svg.namespaceURI,"path");
-fg.setAttribute("transform","matrix(1,0,0,1,"+pad+","+pad+")");
-fg.setAttribute("d",path);
-svg.insertBefore(fg,null);
-box.insertBefore(lastbarcode=svg,canvas);
-}
-
-
-
-
-
-
-
-
-
-
-
-function launchgame(side){
-if(stream)for(const track of stream.getTracks())track.stop();
-stream=null;
-for(const el of [...document.body.children])if(el.tagName!=="SCRIPT")el.remove();
-game(channel,side); // ✅ Handshake success 🎉 Game on! 🎮
+async function processbarcode(sdp){
+  if(sdp===lastscanned)return;
+  lastscanned=sdp;
+  if(sdp.length<10)return;
+  overlay.style.opacity=1;
+  setTimeout(()=>overlay.style.opacity=0,1000);
+  const type = sdp.split('|')[0];
+  if(type==="offer"){
+    canvas.style.display = "none";
+    peer = new RTCPeerConnection();
+    peer.ondatachannel=e=>{
+      channel=e.channel;
+      channel.onopen=()=>launchgame("b");
+    };
+    await peer.setRemoteDescription({type:"offer",sdp:SDP(sdp)});
+    const answer=await peer.createAnswer();
+    await peer.setLocalDescription(answer);
+    if(peer.iceGatheringState !== "complete"){
+      await new Promise(resolve => {
+        const check = () => {
+          if(peer.iceGatheringState === "complete"){
+            peer.removeEventListener("icegatheringstatechange", check);
+            resolve();
+          }
+        };
+        peer.addEventListener("icegatheringstatechange", check);
+      });
+    }
+    displaybarcode(SDP(peer.localDescription.sdp));
+  }else if(type==="answer"){
+    await peer.setRemoteDescription({type:"answer",sdp:SDP(sdp)});
+  }
 }
 
 
@@ -485,6 +462,54 @@ if(s.includes("\n")){//strip
     "a=end-of-candidates"
   ].join("\r\n")+"\r\n";
 }
+}
+
+
+
+
+
+
+
+
+
+
+
+function displaybarcode(text){
+if(lastbarcode)lastbarcode.remove();
+let d=(Math.min(screen.width,screen.height)<600)
+  ?Math.round(window.innerWidth*0.7)
+  :Math.round(2*96*window.devicePixelRatio);
+let [a,size]=datamatrix(text);
+let pad=2,w=size+pad*2;
+let c=document.createElement("canvas");
+c.width=c.height=d;
+let ctx=c.getContext("2d");
+let scale=d/w;
+ctx.fillStyle="white";
+ctx.fillRect(0,0,d,d);
+ctx.fillStyle="black";
+for(let j=0;j<size;j++){
+  for(let i=0;i<size;i++){
+    if(a[j][i]){
+      ctx.fillRect((i+pad)*scale,(j+pad)*scale,scale,scale);
+}}}
+box.insertBefore(lastbarcode=c,canvas);
+}
+
+
+
+
+
+
+
+
+
+
+
+function launchgame(side){
+if(stream)for(const track of stream.getTracks())track.stop(); stream=null;
+for(const el of [...document.body.children])if(el.tagName!=="SCRIPT")el.remove();
+game(channel,side);
 }
 
 
