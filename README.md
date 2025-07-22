@@ -74,7 +74,7 @@ At one point, I used Messenger for the handshake and supported remote 1v1 via ST
 
 I settled on **barcodes** because it's the only handshake strategy that fits within the JS13K rules — although it **only works on Android Chrome**.
 
-Technically, you could send a barcode to a remote user, but it's best suited for face-to-face handshakes. So I dropped STUN support as well, and now both peers must be on the same Wi-Fi.
+Since it is a face-to-face handshake, I dropped remote STUN support, and now both peers must be on the same Wi-Fi.
 
 JavaScript has a built-in barcode *reader*, but not a *generator*. For the generator, I originally considered `QR Code`, but even with a fixed version and error level, the logic is still 10k. This is due to **complex features** like multiple placement patterns, *masking with scoring and selection*, and *interleaving data across multiple blocks* with separate error correction.
 
