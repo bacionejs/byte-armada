@@ -75,7 +75,7 @@ if(channel){
   return;
 }
 c.strokeStyle="white";
-for(let i=0;i<25;i++){let x=(i%5)*(W/5),y=floor(i/5)*(W/5);c.strokeRect(x,y,W/5,W/5);c.fillStyle="white";c.textAlign="center";c.textBaseline="middle";c.font=W/35+"px monospace";c.fillText("lv"+(i+1),x+W/10,y+W/10);}
+for(let i=0;i<25;i++){let x=(i%5)*(W/5),y=floor(i/5)*(W/5);c.strokeRect(x,y,W/5,W/5);c.fillStyle="white";c.textAlign="center";c.textBaseline="middle";c.font=W/35+"px monospace";c.fillText((i+1),x+W/10,y+W/10);}
 if(blue.health){
   level++;
   c.strokeStyle="lime";
