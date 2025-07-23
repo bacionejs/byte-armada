@@ -60,7 +60,7 @@ To reduce UI complexity, instead of choosing distinct units with various abiliti
 
 ---
 
-## ✏️ Art
+## 🎨 Art
 
 I created [Vector Bay](//github.com/bacionejs/vectorbay) for building symmetrical ships.
 
