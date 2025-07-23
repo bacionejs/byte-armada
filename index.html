@@ -21,7 +21,7 @@ intro.onpointerdown = e => {
  timeout = setTimeout(() => {
    hold = true;
    intro.remove();
-   handshake(); // Long press triggers PvP
+   handshake(); // Long press triggers multiplayer
  }, 600);
 };
 
@@ -29,7 +29,7 @@ intro.onpointerup = _ => {
  clearTimeout(timeout);
  if (!hold) {
    intro.remove();
-   game(); // Tap triggers PvC
+   game(); // Click triggers single player
  }
  hold = false;
 };
@@ -140,7 +140,7 @@ if(channel){
 
 //explosion
 for(let i of [blue,red]){
-  i.entities.filter(e=>e.hp<=0 || e.delete===true).forEach(e=>explode(e));
+  i.entities.filter(e=>e.hp<=0 || e.delete===true).forEach(explode);
 }
 
 //remove
@@ -188,19 +188,26 @@ if(!p){
 }else{
   p.range=y;
   b.push(p);
-  if(channel){
-    channel.send(JSON.stringify({
-      x: p.x,
-      w: W,
-      range: p.range,
-      speed: p.speed,
-      side: p.side = side,
-      id: p.id = blue.id++
-    }));
-  }
+  if(channel){ channel.send(JSON.stringify({ x: p.x, w: W, range: p.range, speed: p.speed, side: p.side = side, id: p.id = blue.id++ })); }
   p=null;
 }
 }
+
+if (channel) { channel.onmessage = ({ data }) => {
+  let parsed; try { parsed = JSON.parse(data); } catch { return; }; let { delete: del, id, side, x, w, speed, range } = parsed;
+  //desync safeguard
+  if (del === true) { ([red, blue].flatMap(t => t.entities).find(e => e.id === id && e.side === side) || {}).delete = true; return; }
+  //add
+  red.entities.push(entity( x / w * W, 0, PI, -speed, range, side, id));
+}; }
+
+
+
+
+
+
+
+
 
 function explode(target){
 c.save();
@@ -210,36 +217,6 @@ c.fill(shape([Array.from({ length: 40 }, () => rnd(40) - 20)], 1, false));
 c.restore();
 sound.explosion();
 }
-
-if (channel) {
-  channel.onmessage = e => {
-    let msg = JSON.parse(e.data);
-    //force deletion in case desynced 
-    if (msg.delete === true) {
-      ([red, blue].flatMap(t => t.entities).find(e => e.id === msg.id && e.side === msg.side) || {}).delete = true;
-      return;
-    }
-    //add
-    red.entities.push(entity(
-      msg.x / msg.w * W,
-      0,
-      PI,
-      -msg.speed,
-      msg.range,
-      msg.side,
-      msg.id
-    ));
-  };
-}
-
-
-
-
-
-
-
-
-
 
 let background=(()=>{
 let c=document.createElement("canvas").getContext("2d");c.canvas.width=c.canvas.height=W;
@@ -370,11 +347,7 @@ requestAnimationFrame(loop);
   channel = peer.createDataChannel("x");
   channel.onopen = () => launchgame("a");
   await peer.setLocalDescription(await peer.createOffer());
-  await new Promise(resolve => {
-    peer.onicecandidate = e => {
-      if (e.candidate) resolve();
-    };
-  });
+  await new Promise(resolve => { peer.onicecandidate = e => { if (e.candidate) resolve(); }; });
   displaybarcode(SDP(peer.localDescription.sdp));
 })();
 
@@ -403,19 +376,8 @@ async function processbarcode(sdp){
       channel.onopen=()=>launchgame("b");
     };
     await peer.setRemoteDescription({type:"offer",sdp:SDP(sdp)});
-    const answer=await peer.createAnswer();
-    await peer.setLocalDescription(answer);
-    if(peer.iceGatheringState !== "complete"){
-      await new Promise(resolve => {
-        const check = () => {
-          if(peer.iceGatheringState === "complete"){
-            peer.removeEventListener("icegatheringstatechange", check);
-            resolve();
-          }
-        };
-        peer.addEventListener("icegatheringstatechange", check);
-      });
-    }
+    await peer.setLocalDescription(await peer.createAnswer());
+    await new Promise(resolve => { peer.onicecandidate = e => { if (e.candidate) resolve(); }; });
     displaybarcode(SDP(peer.localDescription.sdp));
   }else if(type==="answer"){
     await peer.setRemoteDescription({type:"answer",sdp:SDP(sdp)});
