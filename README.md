@@ -13,7 +13,7 @@ Two modes:
 -🧍🤖 Single Player  
 -🧍🧍 Player versus Player (1v1) 
 
-For 1v1, just long-press the intro screen and scan each other's phone, but it only works with Android Chrome on the same wifi. 
+For 1v1, just long-press the intro screen and scan 🔗 each other's phone 📱, but it only works with Android Chrome on the same wifi. 
 
 ---
 
