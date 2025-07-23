@@ -2,7 +2,7 @@
 
 [![Demo – Click to Play](README.jpg)](https://bacionejs.github.io/byte-armada/)
 
-# **Byte Armada Instructions**
+# 📜 **Byte Armada Instructions**
 
 
 **Byte Armada** is a real-time strategy space shooter. 
@@ -17,11 +17,11 @@ For 1v1, just long-press the intro screen and scan each other's phone, but it on
 
 ---
 
-Objective: get a ship to the other side.
+🥅 Objective: get a ship to the other side.
 
 ---
 
-To create a ship, **click two** of the five zones:
+🚀 To create a ship, **click two** of the five zones:
 
 - Your **first click** determines the ship’s horizontal **position** and **speed**
 - Your **second click** determines the **range**
