@@ -48,7 +48,7 @@ I wanted to distill down to the essence of the genre — the balancing act betwe
 
 Actually, it is a real-time tactics (RTT) game, not RTS, but few are familiar with that term. Unlike RTS, RTT doesn't include base building.
 
-You're limited to **five units at a time**. Whereas the enemy has no limit and spawns faster each level.
+You're limited to *five units at a time*. Whereas the enemy has no limit and spawns faster each level.
 
 To increase user interest, levels can be skipped.
 
