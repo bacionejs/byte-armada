@@ -2,7 +2,7 @@
 
 [![Demo – Click to Play](README.jpg)](https://bacionejs.github.io/byte-armada/)
 
-# 📜 **Byte Armada Instructions**
+# **Byte Armada Instructions**
 
 
 **Byte Armada** is a real-time strategy space shooter. 
@@ -10,18 +10,18 @@
 ---
 
 Two modes:  
-- 🤖 Single Player  
-- 🧍 Player versus Player (1v1) 
+- Single Player  
+- Player versus Player (1v1) 
 
-For 1v1, just long-press the intro screen and scan 🔗 each other's phone 📱, but it only works with Android Chrome on the same wifi. 
-
----
-
-🥅 Objective: get a ship to the other side.
+For 1v1, just long-press the intro screen and scan each other's phone, but it only works with Android Chrome on the same wifi. 
 
 ---
 
-🚀 To create a ship, **click two** of the five zones:
+Objective: get a ship to the other side.
+
+---
+
+To create a ship, **click two** of the five zones:
 
 - Your **first click** determines the ship’s horizontal **position** and **speed**
 - Your **second click** determines the **range**
@@ -60,7 +60,7 @@ To reduce UI complexity, instead of choosing distinct units with various abiliti
 
 ---
 
-## 🎨 Art
+## ✏️ Art
 
 I created [Vector Bay](//github.com/bacionejs/vectorbay) for building symmetrical ships.
 
@@ -83,3 +83,7 @@ JavaScript has a built-in barcode *reader*, but not a *generator*. For the gener
 It supports a 2,000 byte payload, but anything above 200 is unreliable — **not because of the barcode generator or the `BarcodeDetector` API, but because my live camera pipeline is fragile and lacks the advanced image processing built into native phone scanners**.
 
 RTC handshakes (SDP) are 1,600 bytes, and compression only brings that down to 700. So I implemented **SDP elision**, stripping out shared boilerplate, reducing the payload to just 130. 🎉
+
+# Developer Reflections
+
+I made this game as an experiment in simplifying real-time tactics. Instead of choosing individual units from a list, I wanted to try using sliders to influence the overall composition — hoping that interesting tactics would emerge from minimal controls. Sliders have been explored in other games, so it’s not an original concept — just that my controls support quick decisions. In the end, the single-player mode feels limited, and the player-versus-player mode tends to result in stalemates. So in that sense, it didn’t succeed — but maybe it’ll inspire someone else to make something better.
