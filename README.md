@@ -56,7 +56,7 @@ To reduce UI clutter, instead of ugly health bars over each unit, ship size indi
 
 To reduce interactions, there is no route swiping, and position/speed are combined in the first click - unorthodox and non-intuitive, but it does help in a fast-paced game.
 
-To reduce UI complexity, instead of choosing distinct units with various abilities, you have **two abilities**, which, when combined, provide **25 combinations** of speed and range, which are inversely correlated to HP and hit power. With this, complex strategies **might** emerge from a simple interface. But in the end, nothing tactically interesting emerged, in fact, PvP is a constant stalemate.
+To reduce UI complexity, instead of choosing distinct units with various abilities, you have *two abilities*, which, when combined, provide *25 combinations* of speed and range, which are inversely correlated to HP and hit power. With this, complex strategies *might* emerge from a simple interface. **But in the end, nothing tactically interesting emerged, in fact, PvP is a constant stalemate**.
 
 ---
 
