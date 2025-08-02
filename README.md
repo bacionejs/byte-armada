@@ -86,5 +86,5 @@ RTC handshakes (SDP) are 1,600 bytes, and compression only brings that down to 7
 
 # Developer Reflection
 
-I made this game as an experiment in simplifying real-time tactics, hoping that **interesting tactics could emerge from minimal controls**. Imagine speed chess game with pieces defined by 2 traits and 5 magnitudes. But in the end, nothing tactically interesting emerged, in fact, PvP is a constant stalemate.
+I made this game hoping that **interesting tactics would emerge from minimal controls**. Imagine a speed chess game with pieces defined by 2 traits and 5 magnitudes. But in the end, nothing tactically interesting emerged, in fact, PvP is a constant stalemate.
 
