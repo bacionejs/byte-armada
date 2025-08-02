@@ -86,4 +86,5 @@ RTC handshakes (SDP) are 1,600 bytes, and compression only brings that down to 7
 
 # Developer Reflection
 
-I made this game as an experiment in simplifying real-time tactics. Instead of choosing individual units from a list, I wanted to try using "sliders" to influence the overall composition — hoping that **interesting tactics would emerge from minimal controls**. Sliders have been explored in other games, so it’s not an original concept — just that my controls, zones vs sliders, support quick decisions. But in the end, the single-player mode feels limited, and the player-versus-player mode tends to result in stalemates. So in that sense, it didn’t succeed — but maybe it’ll inspire someone else to make something better.
+I made this game as an experiment in simplifying real-time tactics, hoping that **interesting tactics could emerge from minimal controls**. Imagine speed chess game with pieces defined by 2 traits and 5 magnitudes. But in the end, nothing tactically interesting emerged, in fact, PvP is a constant stalemate.
+
