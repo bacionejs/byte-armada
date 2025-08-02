@@ -58,6 +58,8 @@ To reduce interactions, there is no route swiping, and position/speed are combin
 
 To reduce UI complexity, instead of choosing distinct units with various abilities, you have **two abilities**, which, when combined, provide **25 combinations** of speed and range, which are inversely correlated to HP and hit power. With this, complex strategies can emerge from a simple interface.
 
+I made this game hoping that **interesting tactics would emerge from minimal controls**. Imagine a speed chess game with pieces defined by 2 traits and 5 magnitudes. But in the end, nothing tactically interesting emerged, in fact, PvP is a constant stalemate.
+
 ---
 
 ## 🎨 Art
@@ -84,7 +86,4 @@ It supports a 2,000 byte payload, but anything above 200 is unreliable — **not
 
 RTC handshakes (SDP) are 1,600 bytes, and compression only brings that down to 700. So I implemented **SDP elision**, stripping out shared boilerplate, reducing the payload to just 130. 🎉
 
-# Developer Reflection
-
-I made this game hoping that **interesting tactics would emerge from minimal controls**. Imagine a speed chess game with pieces defined by 2 traits and 5 magnitudes. But in the end, nothing tactically interesting emerged, in fact, PvP is a constant stalemate.
 
