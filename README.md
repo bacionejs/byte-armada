@@ -83,3 +83,7 @@ JavaScript has a built-in barcode *reader*, but not a *generator*. For the gener
 It supports a 2,000 byte payload, but anything above 200 is unreliable — **not because of the barcode generator or the `BarcodeDetector` API, but because my live camera pipeline is fragile and lacks the advanced image processing built into native phone scanners**.
 
 RTC handshakes (SDP) are 1,600 bytes, and compression only brings that down to 700. So I implemented **SDP elision**, stripping out shared boilerplate, reducing the payload to just 130. 🎉
+
+# Developer Reflection
+
+I made this game as an experiment in simplifying real-time tactics. Instead of choosing individual units from a list, I wanted to try using "sliders" to influence the overall composition — hoping that interesting tactics would emerge from minimal controls. Sliders have been explored in other games, so it’s not an original concept — just that my controls, zones vs sliders, support quick decisions. But in the end, the single-player mode feels limited, and the player-versus-player mode tends to result in stalemates. So in that sense, it didn’t succeed — but maybe it’ll inspire someone else to make something better.
