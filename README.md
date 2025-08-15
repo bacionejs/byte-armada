@@ -34,7 +34,7 @@ To create a 🚀, click 🚨**TWO**🚨 of the five zones:
 
 ## 🎨 Art
 
-I created [Vector Bay](//github.com/bacionejs/vectorbay) for building symmetrical ships.
+I created [Vector Bay](//github.com/bacionejs/vectorbay) for building spaceships.
 
 ## 📷 Barcode Handshake
 
