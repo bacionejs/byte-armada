@@ -2,30 +2,30 @@
 
 [![Demo – Click to Play](README.jpg)](https://bacionejs.github.io/byte-armada/)
 
-**byte-armada** is a real-time-tactics 😾 fight
+**byte-armada** is a real-time-tactics 🚀 game
 
 ---
 
-- 😾🤖 Single Player - click intro  
-- 😾😾 Multi  Player - long-press intro and scan each other's 📱 (Android Chrome on same wifi)   
+- 🚀🤖 Single Player - click intro  
+- 🚀🚀 Multi  Player - long-press intro and scan each other's 📱 (Android Chrome on same wifi)   
 
 ---
 
-🥅 Objective: get a 😾 to the other side.
+🥅 Objective: get a 🚀 to the other side.
 
 ---
 
 🎮 Controls
 
-To create a 😾, click 🚨**TWO**🚨 of the five zones:
+To create a 🚀, click 🚨**TWO**🚨 of the five zones:
 
-- Your **first click** determines the 😾 horizontal **position** and **speed**  
+- Your **first click** determines the 🚀 horizontal **position** and **speed**  
 - Your **second click** determines the 🔫 **range**  
-- For example, to create a fast 😾 in the lower-right, click upper-right  
+- For example, to create a fast 🚀 in the lower-right, click upper-right  
 
-> With 5 zones for 🎚️ speed and 🎚️ range, there are **25 possible 😾 configurations**  
+> With 5 zones for 🎚️ speed and 🎚️ range, there are **25 possible 🚀 configurations**  
 
-😾 **higher speed = less health**  
+🚀 **higher speed = less health**  
 🔫 **higher range = less damage**  
 
 ---
