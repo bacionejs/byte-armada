@@ -2,75 +2,43 @@
 
 [![Demo – Click to Play](README.jpg)](https://bacionejs.github.io/byte-armada/)
 
-# 📜 **Byte Armada Instructions**
-
-
-**Byte Armada** is a real-time strategy space shooter. 
+**byte-armada** is a real-time-tactics 😾 fight
 
 ---
 
-Two modes:  
-- 🤖 Single Player  
-- 🧍 Player versus Player (1v1) 
-
-For 1v1, just long-press the intro screen and scan each other's phone 📱, but it only works with Android Chrome on the same wifi. 
+- 😾🤖 Single Player - click intro  
+- 😾😾 Multi  Player - long-press intro and scan each other's 📱 (Android Chrome on same wifi)   
 
 ---
 
-🥅 Objective: get a ship to the other side.
+🥅 Objective: get a 😾 to the other side.
 
 ---
 
-🚀 To create a ship, **click two** of the five zones:
+🎮 Controls
 
-- Your **first click** determines the ship’s horizontal **position** and **speed**
-- Your **second click** determines the **range**
-- For example, to create a fast ship in the lower-right, click upper-right.
+To create a 😾, click 🚨**TWO**🚨 of the five zones:
 
-> With 5 zones for 🎚️ speed and 🎚️ range, there are **25 possible ship configurations**.
+- Your **first click** determines the 😾 horizontal **position** and **speed**  
+- Your **second click** determines the 🔫 **range**  
+- For example, to create a fast 😾 in the lower-right, click upper-right  
 
-🛡 Ships with **higher speed have less HP**,  
-🔫 Lasers with **longer range are weaker**.
+> With 5 zones for 🎚️ speed and 🎚️ range, there are **25 possible 😾 configurations**  
 
----
-
-# 📘 Post-Mortem
+😾 **higher speed = less health**  
+🔫 **higher range = less damage**  
 
 ---
 
-## 🎮 Gameplay Design
-
-**Byte Armada** is a real-time strategy space shooter.
-
-My inspiration for the game is the classic *Age of Empires*, where you have to manage resources and choose different unit types. 
-
-I wanted to distill down to the essence of the genre — the balancing act between agility and strength, hit power and firepower — and make it with a simple interface.
-
-Actually, it is a real-time tactics (RTT) game, not RTS, but few are familiar with that term. Unlike RTS, RTT doesn't include base building.
-
-You're limited to *five units at a time*. Whereas the enemy has no limit and spawns faster each level.
-
-To increase user interest, levels can be skipped.
-
-To reduce UI clutter, instead of ugly health bars over each unit, ship size indicates HP and TTS tells status.
-
-To reduce interactions, there is no route swiping, and position/speed are combined in the first click - unorthodox and non-intuitive, but it does help in a fast-paced game.
-
-Instead of choosing distinct units with various abilities, there are *two traits*, which, when combined with *five magnitudes*, provide *25 combinations*, with inverse relationships. I was hoping that complex strategies *might* emerge from a simple interface. **But in the end, nothing tactically interesting emerged, in fact, PvP is a constant stalemate**.
+# 📚 Post-Mortem
 
 ---
 
-## 🎨 Art
+# 📷 Barcode Handshake
 
-I created [Vector Bay](//github.com/bacionejs/vectorbay) for building symmetrical ships.
+I wanted the option to have multiplayer and spent an incredible amount of time figuring out ways to do the **communication handshake between two phones without requiring a server**.
 
----
-
-## 📷 Barcode Handshake
-
-I wanted the option to have 1v1 and spent an incredible amount of time figuring out ways to do the **communication handshake between two phones without requiring a server**.
-
-At one point, I used Messenger for the handshake and supported remote 1v1 via STUN, but it was cumbersome and non-compliant.
+At one point, I used Messenger for the handshake and supported remote multiplayer via STUN, but it was cumbersome and non-compliant.
 
 I settled on **barcodes** because it's the only handshake strategy that fits within the JS13K rules — although it **only works on Android Chrome**.
 
@@ -80,7 +48,7 @@ JavaScript has a built-in barcode *reader*, but not a *generator*. For the gener
 
 `DataMatrix` has a much simpler structure: fixed placement, no masking, and a single block, and I simplified the algorithm to 1k, mostly by supporting only a single encoding mode.
 
-It supports a 2,000 byte payload, but anything above 200 is unreliable — **not because of the barcode generator or the `BarcodeDetector` API, but because my live camera pipeline is fragile and lacks the advanced image processing built into native phone scanners**.
+It supports a 2,000 byte payload, but anything above 200 is unreliable — **not because of the barcode generator or the `BarcodeDetector` API, but because my live camera pipeline is fragile and lacks the advanced processing built into native phone scanners**.
 
 RTC handshakes (SDP) are 1,600 bytes, and compression only brings that down to 700. So I implemented **SDP elision**, stripping out shared boilerplate, reducing the payload to just 130. 🎉
 
