@@ -39,11 +39,7 @@ I created [Vector Bay](//github.com/bacionejs/vectorbay) for building spaceships
 
 ## 📷 Barcode Handshake
 
-To support multiplayer without a server, I initially used Messenger for the handshake and remote peers via STUN, but it was cumbersome.
-
-I settled on **barcodes** because it's the only handshake strategy that fits within the JS13K rules — although it **only works on Android Chrome**.
-
-Since it is a face-to-face handshake, I dropped STUN support, therefore both peers must be on the same Wi-Fi.
+To support multiplayer without a server, I initially used Messenger for the handshake and STUN for remote peers, but it was cumbersome. So, I settled on **barcode handshake**, face-to-face, with both peers on the same Wi-Fi.
 
 JavaScript has a built-in barcode *reader*, but not a *generator*. For the generator, I originally considered `QR Code`, but even with a fixed version and error level, the logic is still 10k. This is due to **complex features** like multiple placement patterns, *masking with scoring and selection*, and *interleaving data across multiple blocks* with separate error correction.
 
