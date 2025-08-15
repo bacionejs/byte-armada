@@ -6,9 +6,9 @@
 
 ---
 
-- 🚀🤖 Single Player - click intro  
-- 🚀🚀 Multi  Player - long-press intro and scan each other's 📱 (Android Chrome on same wifi)   
-
+- 🚀🤖 1 Player ➡️ click intro  
+- 🚀🚀 2 Player ➡️ long-press intro and scan each other's 📱 (Android Chrome on same wifi)
+- 
 ---
 
 🥅 Objective: get a 🚀 to the other side.
