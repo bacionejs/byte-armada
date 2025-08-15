@@ -5,10 +5,11 @@
 **byte-armada** is a real-time-tactics 🚀 game
 
 ---
+Modes: single and multiplayer
 
-- 🚀🤖 1 Player ➡️ click intro  
-- 🚀🚀 2 Player ➡️ long-press intro and scan each other's 📱 (Android Chrome on same wifi)
-- 
+- 🚀🤖 - click intro  
+- 🚀🚀 - long-press intro and scan each other's 📱 (Android Chrome on same wifi)
+
 ---
 
 🥅 Objective: get a 🚀 to the other side.
@@ -19,7 +20,7 @@
 
 To create a 🚀, click 🚨**TWO**🚨 of the five zones:
 
-- Your **first click** determines the 🚀 horizontal **position** and **speed**  
+- Your **first click** determines the 🚀 horizontal **position** and **speed** 
 - Your **second click** determines the 🔫 **range**  
 - For example, to create a fast 🚀 in the lower-right, click upper-right  
 
