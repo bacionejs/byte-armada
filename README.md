@@ -33,6 +33,8 @@ To create a 🚀, click 🚨**TWO**🚨 of the five zones:
 
 # 📚 Post-Mortem
 
+## 💡 Inspiration: Age of Empires-style resource management. I aimed to create a **real-time tactics space shooter** that emphasizes strategic decision-making while keeping the **user interface minimal and uncluttered**.
+
 ## 🎨 Art
 
 I created [Vector Bay](//github.com/bacionejs/vectorbay) for building spaceships.
