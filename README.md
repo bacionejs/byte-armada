@@ -2,7 +2,7 @@
 
 [![Demo – Click to Play](README.jpg)](https://bacionejs.github.io/byte-armada/)
 
-**byte-armada** is a real-time-tactics 🚀 game
+**Byte Armada** is a real-time-tactics 🚀 game
 
 ---
 Modes: single and multiplayer
