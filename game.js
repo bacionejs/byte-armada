@@ -2,7 +2,7 @@ function game(channel,side){
 element("style").textContent="*{position:fixed;margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;}";
 document.body.style.background="black";
 let {floor,ceil,random,PI,abs,atan2,min}=Math;
-let level=0,W=min(innerWidth,innerHeight),mode=0,p=null,FPS=30,q=5,buckettime=20,cooldown=FPS,max=5,health=1,timers=[],scale=((W/q)/(FPS*buckettime));
+let level=12,W=min(innerWidth,innerHeight),mode=0,p=null,FPS=30,q=5,buckettime=20,cooldown=FPS,max=5,health=1,timers=[],scale=((W/q)/(FPS*buckettime));
 let can=element("canvas"),c=can.getContext("2d");can.width=can.height=W;can.addEventListener("pointerdown",e=>{mode?(mode=0,start(e)):click(e);});
 
 let sound=Sound();
@@ -55,7 +55,7 @@ if(p){
 }
 if(!channel){
   for(let i=0;i<3;i++) bot();
-  let interval = 8000 - ((level - 1) * (5000 / 24));
+  let interval = 6000 - ((level - 1) * (5000 / 24));
   timers.push(setInterval(()=>{bot();},interval));
 }
 timers.push(setInterval(update,1000/FPS));
