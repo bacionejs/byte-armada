@@ -29,7 +29,7 @@ To create a 🚀, click 🚨**TWO**🚨 of the five zones:
 🚀 **higher speed = less health**  
 🔫 **higher range = less damage**  
 
-⚙️You can change levels manually if you want  
+⚙️ You can change levels manually if you want  
 
 ---
 
