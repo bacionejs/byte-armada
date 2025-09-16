@@ -45,6 +45,9 @@ I tried to fit cats into the game by making the spaceships look like cat's heads
 
 Also, as a beginner, I tend to have one simple concept in mind and I don't add any depth to my games which players expect. Maybe in the future I will cover that.  
 
+It seems I've been too focused on trying to make a simple version of all the games that I've liked in the past. For example, Alto (Bike), DoodleJump (FURBALL) , and strategy (this game). My only odd one is Jazz which was merely a desire to make an initial foray into a high-fidelity character animation. Hopefully next year I'll have an original game that's not inspired by anything. Except there is one game I still want to replicate, and that is a first-person vector style tie-fighter...and Unblock, one of my favorite simple games.
+
+
 ## 🎨 Art
 
 I created [Vector Bay](//github.com/bacionejs/vectorbay) for building spaceships.
