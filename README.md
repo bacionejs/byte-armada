@@ -35,9 +35,13 @@ To create a 🚀, click 🚨**TWO**🚨 of the five zones:
 
 # 📚 Post-Mortem
 
-## 💡 Inspiration
+## 💡 Back Story
 
-Age of Empires was my inspiration. I aimed to create a **real-time tactics space shooter** that emphasizes strategic decision-making while keeping the **user interface minimal and uncluttered**.  
+I aimed to create a **real-time tactics space shooter** that emphasizes strategic decision-making while keeping the **user interface minimal and uncluttered**.  
+
+I tried to fit cats into the game by making the spaceships look like cat's heads, but it looked really bad and I couldn't figure out another way to fit cats into a space shooter so I gave up. 
+
+Also, as a beginner, I tend to have one simple concept in mind and I don't add any depth to my games which players expect. Maybe in the future I will cover that.  
 
 ## 🎨 Art
 
