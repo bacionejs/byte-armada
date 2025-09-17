@@ -39,7 +39,7 @@ To create a 🚀, click 🚨**TWO**🚨 of the five zones:
 
 I aimed to create a **real-time tactics space shooter** that emphasizes strategic decision-making while keeping the **user interface minimal and uncluttered**.  
 
-This is why the user interface is so unintuitive... trying to fit a range of  **fast** choices into a minimum number of clicks. Initially I showed some indication of the process, but it didn't add much, so I took it out. However, it still is problematic.
+This is why the user interface is so unintuitive...trying to fit a range of **fast** choices into a minimum number of clicks. Initially I showed some indication of the process, but it didn't add much, so I took it out.
 
 I tried to fit cats into the game by making the spaceships look like cat heads, but it looked really bad and I couldn't figure out another way to fit cats into a space shooter so I gave up. 
 
