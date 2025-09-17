@@ -35,7 +35,7 @@ To create a 🚀, click 🚨**TWO**🚨 of the five zones:
 
 # 📚 Post-Mortem
 
-## 💡 Back Story
+## Overview
 
 I aimed to create a **real-time tactics space shooter** that emphasizes strategic decision-making while keeping the **user interface minimal and uncluttered**.  
 
