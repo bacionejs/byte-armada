@@ -43,7 +43,7 @@ This is why the user interface is so unintuitive... trying to fit a range of  **
 
 I tried to fit cats into the game by making the spaceships look like cat heads, but it looked really bad and I couldn't figure out another way to fit cats into a space shooter so I gave up. 
 
-It seems I've been too focused on trying to make a simple version of all the games that I've liked in the past. For example, Alto ([Bike](https://github.com/bacionejs/bike)), DoodleJump ([FURBALL](https://github.com/bacionejs/furball)) , and strategy (this game). My only odd one is [Jazz](https://github.com/bacionejs/cat) which was merely a desire to make an initial foray into high-fidelity character animation. Hopefully next year I'll have an original game that's not inspired by anything. Except there is one game I still want to replicate, and that is a first-person vector style tie-fighter.
+It seems I've been too focused on trying to make a simple version of all the games that I've liked in the past. For example, [Bike](https://github.com/bacionejs/bike) (Alto), [FURBALL](https://github.com/bacionejs/furball) (DoodleJump) , and this game (strategy). My only odd one is [Jazz](https://github.com/bacionejs/cat) which was merely a desire to make an initial foray into high-fidelity character animation. Hopefully next year I'll have an original game that's not inspired by anything. Except there is one game I still want to replicate, and that is a first-person vector style tie-fighter.
 
 I learned many new things this year and had **fun creating**.  
 Next year I will focus more on you having **fun playing**.  
