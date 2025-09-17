@@ -39,13 +39,13 @@ To create a 🚀, click 🚨**TWO**🚨 of the five zones:
 
 I aimed to create a **real-time tactics space shooter** that emphasizes strategic decision-making while keeping the **user interface minimal and uncluttered**.  
 
-This is why the user interface is so unintuitive... trying to fit a range of choices into a minimum number of clicks. Initially I showed some indication of the process, but it didn't add much, so I took it out. However, it still is problematic.
+This is why the user interface is so unintuitive... trying to fit a range of  **fast** choices into a minimum number of clicks. Initially I showed some indication of the process, but it didn't add much, so I took it out. However, it still is problematic.
 
-I tried to fit cats into the game by making the spaceships look like cat's heads, but it looked really bad and I couldn't figure out another way to fit cats into a space shooter so I gave up. 
+I tried to fit cats into the game by making the spaceships look like cat heads, but it looked really bad and I couldn't figure out another way to fit cats into a space shooter so I gave up. 
 
-Also, as a beginner, I tend to have one simple concept in mind and I neglect to add any depth to my games which players expect. Maybe in the future I will cover that.  
+It seems I've been too focused on trying to make a simple version of all the games that I've liked in the past. For example, Alto ([Bike](https://github.com/bacionejs/bike)), DoodleJump ([FURBALL](https://github.com/bacionejs/furball)) , and strategy (this game). My only odd one is [Jazz](https://github.com/bacionejs/cat) which was merely a desire to make an initial foray into high-fidelity character animation. Hopefully next year I'll have an original game that's not inspired by anything. Except there is one game I still want to replicate, and that is a first-person vector style tie-fighter.
 
-It seems I've been too focused on trying to make a simple version of all the games that I've liked in the past. For example, Alto ([Bike](https://github.com/bacionejs/bike)), DoodleJump ([FURBALL](https://github.com/bacionejs/furball)) , and strategy (this game). My only odd one is [Jazz](https://github.com/bacionejs/cat) which was merely a desire to make an initial foray into high-fidelity character animation. Hopefully next year I'll have an original game that's not inspired by anything. Except there is one game I still want to replicate, and that is a first-person vector style tie-fighter...and Unblock, one of my favorite simple games.
+As a beginner, I **learned** many new technologies this year and had a lot of **fun creating**. Next year I will focus **more** on YOU having **fun playing** 😍 
 
 ## 🎨 Art
 
