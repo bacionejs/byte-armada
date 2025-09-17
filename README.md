@@ -47,7 +47,6 @@ It seems I've been too focused on trying to make a simple version of all the gam
 
 I learned many new things this year and had **fun creating**.  
 Next year I will focus more on you having **fun playing**.  
-
 🫡
 
 ## 🎨 Art
