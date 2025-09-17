@@ -45,7 +45,7 @@ I tried to fit cats into the game by making the spaceships look like cat heads, 
 
 It seems I've been too focused on trying to make a simple version of all the games that I've liked in the past. For example, Alto ([Bike](https://github.com/bacionejs/bike)), DoodleJump ([FURBALL](https://github.com/bacionejs/furball)) , and strategy (this game). My only odd one is [Jazz](https://github.com/bacionejs/cat) which was merely a desire to make an initial foray into high-fidelity character animation. Hopefully next year I'll have an original game that's not inspired by anything. Except there is one game I still want to replicate, and that is a first-person vector style tie-fighter.
 
-As a beginner, I **learned** many new technologies this year and had a lot of **fun creating**. Next year I will focus **more** on YOU having **fun playing** 😍 
+As a beginner, I learned many new technologies this year and had a lot of **fun creating**. Next year I will focus more on you having **fun playing** 😍 
 
 ## 🎨 Art
 
