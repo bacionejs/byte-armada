@@ -30,21 +30,21 @@ To create a ship, click 🚨**TWO**🚨 of the five zones:
 > higher speed = less health
 > higher range = less damage
 
-Example 1: fast/long-range ship placed at right
-- 1st-click: upper-right
-- 2nd-click: upper  
-Example 2: fast/short-range ship placed at right
-- 1st-click: upper-right
-- 2nd-click: lower
-Example 3: slow/short-range ship placed at middle
-- 1st-click: lower-middle
-- 2nd-click: lower
-Example 4: slow/long-range ship placed at middle
-- 1st-click: lower-middle
-- 2nd-click: upper
-Example 5: medium/medium-range ship placed at left
-- 1st-click: middle-left
-- 2nd-click: middle
+- Example 1: fast/long-range ship placed at right
+  - 1st-click: upper-right
+  - 2nd-click: upper
+- Example 2: fast/short-range ship placed at right
+  - 1st-click: upper-right
+  - 2nd-click: lower
+- Example 3: slow/short-range ship placed at middle
+  - 1st-click: lower-middle
+  - 2nd-click: lower
+- Example 4: slow/long-range ship placed at middle
+  - 1st-click: lower-middle
+  - 2nd-click: upper
+- Example 5: medium/medium-range ship placed at left
+  - 1st-click: middle-left
+  - 2nd-click: middle
 
 
 ---
