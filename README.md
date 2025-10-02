@@ -32,7 +32,7 @@ To create a ship, click 🚨**TWO**🚨 of the five zones:
 
 Example 1: fast/long-range ship placed at right
 - 1st-click: upper-right
-- 2nd-click: upper
+- 2nd-click: upper  
 Example 2: fast/short-range ship placed at right
 - 1st-click: upper-right
 - 2nd-click: lower
