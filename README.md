@@ -28,8 +28,8 @@ To create a ship, click 🚨**TWO**🚨 of the five zones:
 
 ---
 With 5 zones for 🎚️ speed and 🎚️ range, there are **25 possible ship configurations**  
-higher speed = less health
-higher range = less damage
+higher speed = less health  
+higher range = less damage  
 
 - Example 1: fast/long-range ship placed at right
   - 1st-click: upper-right
