@@ -23,7 +23,7 @@ When the game starts and you see red enemy on the far side, it is time to start 
 
 To create a ship, click 🚨**TWO**🚨 of the five zones:
 
-- Your **first click** determines the ship horizontal **position** and **speed** 
+- Your **first click** determines the ship **speed** and **horizontal position**
 - Your **second click** determines the ship laser **range**  
 
 ---
