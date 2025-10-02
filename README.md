@@ -26,9 +26,10 @@ To create a ship, click 🚨**TWO**🚨 of the five zones:
 - Your **first click** determines the ship horizontal **position** and **speed** 
 - Your **second click** determines the ship laser **range**  
 
-> With 5 zones for 🎚️ speed and 🎚️ range, there are **25 possible ship configurations**  
-> higher speed = less health
-> higher range = less damage
+---
+With 5 zones for 🎚️ speed and 🎚️ range, there are **25 possible ship configurations**  
+higher speed = less health
+higher range = less damage
 
 - Example 1: fast/long-range ship placed at right
   - 1st-click: upper-right
