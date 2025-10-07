@@ -70,14 +70,17 @@ I created [Vector Bay](//github.com/bacionejs/vectorbay) for building spaceships
 
 ## 📷 Barcode Handshake
 
-To support multiplayer without a server, I initially used Messenger for the handshake and STUN for remote peers, but it was cumbersome. So, I switched to a **barcode handshake**, face-to-face, with both peers on the same Wi-Fi.
+To support multiplayer without a server, exchange a WebRTC SDP (handshake) with a phone barcode, face-to-face, with both peers on the same Wi-Fi. There is no other way to exchange the handshake data that doesn't introduce an external component. For js13k, it seems that google STUN is allowed, but only 80% of the internet is STUNable, and the remainder are mostly mobile networks which require TURN.
+
+A stripped SDP is 130 characters (1600 raw), too long to type, but a perfect fit for a barcode exchange.
 
 JavaScript has a built-in barcode *reader*, but not a *generator*. For the generator, I originally considered `QR Code`, but even with a fixed version and error level, the logic is still 10k. This is due to **complex features** like multiple placement patterns, *masking with scoring and selection*, and *interleaving data across multiple blocks* with separate error correction.
 
 `DataMatrix` has a much simpler structure: fixed placement, no masking, and a single block, and I simplified the algorithm to 1k, mostly by supporting only a single encoding mode.
 
-It supports a 2,000 byte payload, but anything above 200 is unreliable — **not because of the barcode generator or the `BarcodeDetector` API, but because my live camera pipeline is fragile and lacks the advanced processing built into native phone scanners**.
+It supports a 2,000 byte payload, but anything above 200 is unreliable — not because of the barcode generator or the `BarcodeDetector` API, but because my live camera pipeline is fragile and lacks the advanced processing built into native phone scanners.
 
-RTC handshakes (SDP) are 1,600 bytes, and compression only brings that down to 700. So I implemented **SDP elision**, stripping out shared boilerplate, reducing the payload to just 130. 🎉
+Feel free to use ```handshake.js``` without attribution. And as you can see, ```game.js``` only has a few lines to support multiplayer (search for "channel"); merely sharing creation data almost gives a complete solution but it gradually gets out of sync but by sharing destruction data too, it seems that everything works. This approach won't work for more complex games...but good luck, and I hope to see your game someday.
+
 
 
