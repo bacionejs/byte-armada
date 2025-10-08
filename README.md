@@ -58,29 +58,20 @@ I aimed to create a **real-time tactics space shooter** that emphasizes strategi
 
 This is why the user interface is so unintuitive...trying to fit a range of **fast** choices into a minimum number of clicks...sort of like speed-chess. Initially I showed some indication of the process, but it didn't add much, so I took it out.
 
-I tried to fit cats into the game by making the spaceships look like cat heads, but it looked really bad and I couldn't figure out another way to fit cats into a space shooter so I gave up. 
-
-I learned many new things this year and had fun **creating**.  
-Next year I will focus more on you having fun **playing**.  
-🫡
-
 ## 🎨 Art
 
 I created [Vector Bay](//github.com/bacionejs/vectorbay) for building spaceships.
 
 ## 📷 Barcode Handshake
 
-To support multiplayer without a server, exchange a WebRTC SDP (handshake) with a phone barcode, face-to-face, with both peers on the same Wi-Fi. There is no other way to exchange the handshake data that doesn't introduce an external component. For js13k, it seems that google STUN is allowed, but only 80% of the internet is STUNable, and the remainder are mostly mobile networks which require TURN.
+To support multiplayer without a server, exchange a WebRTC SDP handshake with a phone barcode, face-to-face, with both players on the same wifi. A stripped SDP is 130 characters (1600 raw), too long to type, but a perfect fit for a barcode handshake.
 
-A stripped SDP is 130 characters (1600 raw), too long to type, but a perfect fit for a barcode exchange.
+JavaScript has a built-in barcode *reader*, but not a *generator*. For the generator, I originally considered `QR Code`, but even with a fixed version and error level, the logic is still 10k. This is due to complex features like multiple placement patterns, masking with scoring and selection, and interleaving data across multiple blocks with separate error correction.
 
-JavaScript has a built-in barcode *reader*, but not a *generator*. For the generator, I originally considered `QR Code`, but even with a fixed version and error level, the logic is still 10k. This is due to complex features like multiple placement patterns, *masking with scoring and selection*, and *interleaving data across multiple blocks* with separate error correction.
+`DataMatrix` has a much simpler structure: fixed placement, no masking, and a single block. And 
+by using only a single encoding mode the algorithm is reduced to 1k. It supports a 2,000 byte payload, but anything above 200 is unreliable, not because of the barcode generator or the `BarcodeDetector` API, but because my live camera pipeline is fragile and lacks the advanced processing built into native phone scanners.
 
-`DataMatrix` has a much simpler structure: fixed placement, no masking, and a single block, and I simplified the algorithm to 1k, mostly by supporting only a single encoding mode.
-
-It supports a 2,000 byte payload, but anything above 200 is unreliable — not because of the barcode generator or the `BarcodeDetector` API, but because my live camera pipeline is fragile and lacks the advanced processing built into native phone scanners.
-
-Feel free to use ```handshake.js``` without attribution. And as you can see, ```game.js``` only has a few lines to support multiplayer (search for "channel"); merely sharing creation data almost gives a complete solution but it gradually gets out of sync but by sharing destruction data too, it seems that everything works. This approach won't work for more complex games...but good luck, and I hope to see your game someday. 🥳
+Feel free to use `handshake.js` without attribution. And as you can see, `game.js` only needed a few lines to support multiplayer (search for "channel"); merely sharing creation data almost gives a complete solution but it gradually gets out of sync but by sharing destruction data too, it seems that everything works. This approach won't work for complex games...but good luck, and I hope to see your game someday. 🥳
 
 
 
