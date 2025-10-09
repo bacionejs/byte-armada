@@ -65,8 +65,9 @@ requestAnimationFrame(loop);
   channel = peer.createDataChannel("x");
   channel.onopen = () => launchgame("a");
   await peer.setLocalDescription(await peer.createOffer());
-  await new Promise(resolve => { peer.onicecandidate = e => { if (e.candidate) resolve(); }; });
-  displaybarcode(SDP(peer.localDescription.sdp));
+//   await new Promise(resolve => { peer.onicecandidate = e => { if (e.candidate) resolve(); }; });
+//   displaybarcode(SDP(peer.localDescription.sdp));
+  peer.onicecandidate = e => { if (!e.candidate) { displaybarcode(SDP(peer.localDescription.sdp)); } };
 })();
 
 
