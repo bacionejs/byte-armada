@@ -66,10 +66,7 @@ I created [Vector Bay](//github.com/bacionejs/vectorbay) for building spaceships
 
 To support multiplayer without a server, exchange a WebRTC SDP handshake with a phone barcode, face-to-face, with both players on the same wifi. A stripped SDP is 130 characters (1600 raw), too long to type, but a perfect fit for a barcode handshake.
 
-JavaScript has a built-in barcode *reader*, but not a *generator*. For the generator, I originally considered `QR Code`, but even with a fixed version and error level, the logic is still 10k. This is due to complex features like multiple placement patterns, masking with scoring and selection, and interleaving data across multiple blocks with separate error correction.
-
-`DataMatrix` has a much simpler structure: fixed placement, no masking, and a single block. And 
-by using only a single encoding mode the algorithm is reduced to 1k. It supports a 2,000 byte payload, but anything above 200 is unreliable, not because of the barcode generator or the `BarcodeDetector` API, but because my live camera pipeline is fragile and lacks the advanced processing built into native phone scanners.
+JavaScript has a built-in barcode *reader*, but not a *generator*. For the generator, I originally considered `QR Code`, but even with a fixed version and error level, the logic is still 10k. This is due to complex features like multiple placement patterns, masking with scoring and selection, and interleaving data across multiple blocks with separate error correction. `DataMatrix` has a much simpler structure: fixed placement, no masking, and a single block. And by using only a single encoding mode the algorithm is reduced to 1k.
 
 Feel free to use `handshake.js` without attribution. And as you can see, `game.js` only needed a few lines to support multiplayer (search for "channel"); merely sharing creation data almost gives a complete solution but it gradually gets out of sync but by sharing destruction data too, it seems that everything works. This approach won't work for complex games...but good luck, and I hope to see your game someday. 🥳
 
