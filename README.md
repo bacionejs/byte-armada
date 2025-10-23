@@ -35,7 +35,7 @@ Levels advance automatically, but you can select a level manually if it is too e
 
 ## Overview
 
-I wanted to create a **real-time-tactics space shooter** that emphasizes strategic decision-making while keeping the **user interface minimal and uncluttered**.  
+I wanted to create a real-time-tactics space shooter that emphasizes strategic decision-making while keeping the **user interface minimal and uncluttered**.  
 
 ## 🎨 Art
 
