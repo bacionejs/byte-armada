@@ -46,7 +46,7 @@ if(level>25){
   level=0;
 }
 let x=(level-1)%5*(W/5),y=floor((level-1)/5)*(W/5);c.strokeRect(x,y,W/5,W/5);
-  msg.textContent="";
+msg.textContent="";
 blue.health=red.health=health;
 }
 
