@@ -7,12 +7,15 @@
 ---
 - Single player - click intro  
 - Multi player - long-press intro and scan each other's phone (Android Chrome on same wifi)
+
 ---
 **Objective**  
 Get a ship to the opposite side.  
+
 ---
 **Controls**  
 Click 3 times to create a ship. Max 5 ships.  
+
 ---
 With 5 zones for 🎚️ speed and 🎚️ range, there are **25 possible ship configurations**  
 higher speed = less health  
