@@ -54,7 +54,7 @@ higher range = less damage
 
 ## Overview
 
-I aimed to create a **real-time tactics space shooter** that emphasizes strategic decision-making while keeping the **user interface minimal and uncluttered**.  
+I wanted to create a **real-time tactics space shooter** that emphasizes strategic decision-making while keeping the **user interface minimal and uncluttered**.  
 
 This is why the user interface is so unintuitive...trying to fit a range of **fast** choices into a minimum number of clicks...sort of like speed-chess. Initially I showed some indication of the process, but it didn't add much, so I took it out.
 
