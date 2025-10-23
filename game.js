@@ -1,9 +1,10 @@
 function game(channel,side){
-element("style").textContent="*{position:fixed;margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;}";
+element("style").textContent="*{margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;}";
 document.body.style.background="black";
 let {floor,ceil,random,PI,abs,atan2,min}=Math;
 let level=12,W=min(innerWidth,innerHeight),mode=0,p=null,FPS=30,q=5,buckettime=20,cooldown=FPS,max=5,health=1,timers=[],scale=((W/q)/(FPS*buckettime));
 let can=element("canvas"),c=can.getContext("2d");can.width=can.height=W;can.addEventListener("pointerdown",e=>{mode?(mode=0,start(e)):click(e);});
+let msg=element("div");
 
 let sound=Sound();
 
@@ -34,7 +35,7 @@ if(channel){
   return;
 }
 c.strokeStyle="white";
-for(let i=0;i<25;i++){let x=(i%5)*(W/5),y=floor(i/5)*(W/5);c.strokeRect(x,y,W/5,W/5);c.fillStyle="white";c.textAlign="center";c.textBaseline="middle";c.font=W/35+"px monospace";c.fillText((i+1),x+W/10,y+W/10);}
+for(let i=0;i<25;i++){let x=(i%5)*(W/5),y=floor(i/5)*(W/5);c.strokeRect(x,y,W/5,W/5);c.fillStyle="white";c.textAlign="center";c.textBaseline="middle";c.font=W/35+"px monospace";c.fillText("level "+(i+1),x+W/10,y+W/10);}
 if(blue.health){
   level++;
   c.strokeStyle="lime";
@@ -45,6 +46,7 @@ if(level>25){
   level=0;
 }
 let x=(level-1)%5*(W/5),y=floor((level-1)/5)*(W/5);c.strokeRect(x,y,W/5,W/5);
+  msg.textContent="";
 blue.health=red.health=health;
 }
 
@@ -52,6 +54,7 @@ function start(p){
 if(p){
   let {clientX:x,clientY:y}=p;
   level=floor(x*5/W)+floor(y*5/W)*5+1;
+  msg.style.color="lime"; msg.textContent="Click horizontally to select position";
 }
 if(!channel){
   for(let i=0;i<3;i++) bot();
@@ -139,12 +142,22 @@ function bot(){let r=red.entities;r.push(entity(rnd(W),0,PI,rnd(q+1,1),rnd(q+1,1
 
 function click({clientX:x,clientY:y}){
 let b=blue.entities;
-if(b.length>=max)return;
-y=ceil((W-y)/(W/q));
+if(b.length>=max){
+  msg.style.color="lime"; msg.textContent="Click horizontally to select position --- MAX 5 SHIPS";
+  return;
+}
 if(!p){
   //p=entity(x,5,0,-y);
-  p=entity(x,W,0,-y);
+  p=entity(x,W,0);
+  msg.style.color="orange"; msg.textContent="Click vertically to select speed (fast is weak)";
+}else if(!p.speed){
+  msg.style.color="yellow"; msg.textContent="Click vertically to select range (far is weak)";
+  y=ceil((W-y)/(W/q));
+  p.speed=-y;
+  p.hp=q/abs(y);
 }else{
+  msg.style.color="lime"; msg.textContent="Click horizontally to select position";
+  y=ceil((W-y)/(W/q));
   p.range=y;
   b.push(p);
   if(channel){ channel.send(JSON.stringify({ x: p.x, w: W, range: p.range, speed: p.speed, side: p.side = side, id: p.id = blue.id++ })); }
@@ -177,12 +190,29 @@ c.restore();
 sound.explosion();
 }
 
-let background=(()=>{
+let background2=(()=>{
 let c=document.createElement("canvas").getContext("2d");c.canvas.width=c.canvas.height=W;
 c.strokeStyle = "rgba(0,255,0,0.1)";
 for(let i=0;i<25;i++){let x=(i%5)*(W/5),y=floor(i/5)*(W/5);c.strokeRect(x,y,W/5,W/5);}
 return c.canvas;
 })();
+
+let background = (() => {
+let c = document.createElement("canvas").getContext("2d");
+c.canvas.width = c.canvas.height = W;
+c.strokeStyle = "rgba(0,255,0,0.3)";
+for (let i = 0; i <= 5; i++) {
+  let y = floor((i / 5) * W);
+  c.beginPath();
+  c.moveTo(0, y);
+  c.lineTo(W, y);
+  c.stroke();
+}
+return c.canvas;
+})();
+
+
+
 
 function speak(text){
 if(!window.speechSynthesis) return;
