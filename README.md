@@ -2,7 +2,9 @@
 
 [![Demo – Click to Play](README.jpg)](https://bacionejs.github.io/byte-armada/)
 
-**Byte Armada** is a real-time-tactics space shooter game
+---
+**Byte Armada**  
+a real-time-tactics space shooter game
 
 ---
 **Single player**  
