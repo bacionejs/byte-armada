@@ -65,6 +65,8 @@ requestAnimationFrame(loop);
   channel = peer.createDataChannel("x");
   channel.onopen = () => launchgame("a");
   await peer.setLocalDescription(await peer.createOffer());
+//   await new Promise(resolve => { peer.onicecandidate = e => { if (e.candidate) resolve(); }; });
+//   displaybarcode(SDP(peer.localDescription.sdp));
   peer.onicecandidate = e => { if (!e.candidate) { displaybarcode(SDP(peer.localDescription.sdp)); } };
 })();
 
@@ -94,7 +96,8 @@ async function processbarcode(sdp){
     };
     await peer.setRemoteDescription({type:"offer",sdp:SDP(sdp)});
     await peer.setLocalDescription(await peer.createAnswer());
-    peer.onicecandidate = e => { if (!e.candidate) { displaybarcode(SDP(peer.localDescription.sdp)); } };
+    await new Promise(resolve => { peer.onicecandidate = e => { if (e.candidate) resolve(); }; });
+    displaybarcode(SDP(peer.localDescription.sdp));
   }else if(type==="answer"){
     await peer.setRemoteDescription({type:"answer",sdp:SDP(sdp)});
   }
