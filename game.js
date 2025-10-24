@@ -47,10 +47,10 @@ if(level>25){
 }
 let x=(level-1)%5*(W/5),y=floor((level-1)/5)*(W/5);c.strokeRect(x,y,W/5,W/5);
 blue.health=red.health=health;
-msg.style.color="lime"; msg.textContent="Click horizontally to select position";
 }
 
 function start(p){
+msg.style.color="lime"; msg.textContent="Click horizontally to select position";
 if(p){
   let {clientX:x,clientY:y}=p;
   level=floor(x*5/W)+floor(y*5/W)*5+1;
