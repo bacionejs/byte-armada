@@ -51,10 +51,10 @@ blue.health=red.health=health;
 }
 
 function start(p){
+msg.style.color="lime"; msg.textContent="Click horizontally to select position";
 if(p){
   let {clientX:x,clientY:y}=p;
   level=floor(x*5/W)+floor(y*5/W)*5+1;
-  msg.style.color="lime"; msg.textContent="Click horizontally to select position";
 }
 if(!channel){
   for(let i=0;i<3;i++) bot();
