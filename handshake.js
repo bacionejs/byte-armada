@@ -88,9 +88,8 @@ async function processbarcode(sdp){
   if(type==="offer"){
     canvas.style.display = "none";
     peer = new RTCPeerConnection();
-//     peer.ondatachannel=e=>{
-    peer.ondatachannel=({channel})=>{
-//       channel=e.channel;
+    peer.ondatachannel=e=>{
+      channel=e.channel;
       channel.onopen=()=>launchgame("b");
     };
     await peer.setRemoteDescription({type:"offer",sdp:SDP(sdp)});
