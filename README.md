@@ -84,12 +84,12 @@ I was determined to stick to my "truly serverless" goal. If I couldn't use a web
 
 I devised a simple, face-to-face process to connect two players using their phone cameras.
 
-1.  Both players long-press the game's title screen to enter multiplayer mode.
-2.  Player 1's browser generates a WebRTC "offer" and encodes it into a barcode displayed on their screen.
-3.  Player 2 uses their phone's camera to scan the barcode. The browser's built-in `BarcodeDetector` API makes this surprisingly easy.
-4.  Upon scanning, Player 2's browser generates an "answer" and displays it as a *new* barcode on their screen.
-5.  Player 1 scans Player 2's barcode.
-6.  The handshake is complete! An `RTCDataChannel` opens between the two phones, and the game begins.
+1. Both players long-press the game’s title screen to enter multiplayer mode.  
+2. Each phone’s browser generates a WebRTC “offer” and displays it as a barcode.  
+3. Either player can start by scanning the other’s barcode using their phone camera.  
+4. The phone that scans first automatically becomes the “answerer.” It generates an “answer” and shows a *new* barcode on its screen.  
+5. The other player then scans this “answer” barcode.  
+6. The handshake is complete! An `RTCDataChannel` opens between the two phones, and the game begins.
 
 This worked in theory, but I hit two major technical roadblocks.
 
