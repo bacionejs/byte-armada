@@ -91,7 +91,7 @@ The solution was to strip the SDP boilerplate and then reconstruct it on the oth
 
 JavaScript has a built-in barcode *reader*, but not a *generator*. I initially considered using QR Code, but the algorithm is 30k.
 
-After some research, I found that the **DataMatrix** format was much simpler than QR Code. It lacks complex features like masking patterns and multiple error-correction blocks. By writing a generator focused on a single encoding mode, I was able to create a fully functional DataMatrix generator in just **1kB of JavaScript**.
+After some research, I found that the **DataMatrix** format was much simpler than QR Code. It lacks complex features like masking patterns and multiple error-correction blocks. By writing a generator focused on a single encoding mode, I was able to create a simplified DataMatrix generator in just **1kB of JavaScript**.
 
 ## Keeping the Game in Sync
 
