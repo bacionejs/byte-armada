@@ -50,7 +50,7 @@ for(let t=0;t<teams.length;t++){
     }
     if(!target)continue;
     target.hp-=1/a.range;a.angle=atan2(target.y-a.y,target.x-a.x)+PI/2;
-    c.strokeStyle="lime";c.lineWidth=1;c.beginPath();c.moveTo(a.x,a.y);c.lineTo(target.x,target.y);c.stroke();
+    c.strokeStyle="orange";c.lineWidth=1;c.beginPath();c.moveTo(a.x,a.y);c.lineTo(target.x,target.y);c.stroke();
   }
 }
 }//update
