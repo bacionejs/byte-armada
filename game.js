@@ -2,7 +2,7 @@ function game(channel,side){
 element("style").textContent="*{margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;}";
 document.body.style.background="black";
 let {floor,ceil,random,PI,abs,atan2,min}=Math;
-let W=min(innerWidth,innerHeight),p=null,FPS=30,q=5,buckettime=20,cooldown=FPS,max=5,timers=[],scale=((W/q)/(FPS*buckettime));
+let W=min(innerWidth,innerHeight),FPS=30,q=5,buckettime=20,cooldown=FPS,max=5,timers=[],scale=((W/q)/(FPS*buckettime));
 let can=element("canvas"),c=can.getContext("2d");can.width=can.height=W;can.addEventListener("pointerdown",click);
 let msg=element("div");
 let entities=new Array(max*2).fill(undefined);
@@ -84,17 +84,19 @@ for(let t=0;t<teams.length;t++){
 }//update
 
 function click({clientX:x,clientY:y}){
-if(!p){
+let e=click.e;
+if(!e){
   msg.style.color="orange";msg.textContent="Click vertically to select speed (fast is weak)";
-  p={};p.x=x;p.y=W;p.angle=0;
-}else if(!p.speed){
+  e={};e.x=x;e.y=W;e.angle=0;
+}else if(!e.speed){
   msg.style.color="yellow";msg.textContent="Click vertically to select range (far is weak)";
-  y=ceil((W-y)/(W/q));p.speed=-y;p.hp=q/abs(y);
+  y=ceil((W-y)/(W/q));e.speed=-y;e.hp=q/abs(y);
 }else{
   msg.style.color="lime";msg.textContent="Click horizontally to select position";
-  y=ceil((W-y)/(W/q));let i=emptyslot(side);if(i<0)return;p.range=y;p.i=i;p.w=W;
-  entities[i]=p;channel.send(JSON.stringify(p));p=null;
+  y=ceil((W-y)/(W/q));let i=emptyslot(side);if(i<0)return;e.range=y;e.i=i;e.w=W;
+  entities[i]=e;channel.send(JSON.stringify(e));e=null;
 }
+click.e=e;
 }
 
 channel.onmessage=({data})=>{
