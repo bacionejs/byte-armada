@@ -67,7 +67,7 @@ if(!e){
   msg.style.color="yellow";msg.textContent="Click vertically to select range (far is weak)";
   y=ceil((W-y)/(W/q));e.speed=-y;e.hp=q/abs(y);
 }else{
-  msg.style.color="lime";  msg.textContent="Click horizontally to select position";
+  msg.style.color="lime";msg.textContent="Click horizontally to select position";
   y=ceil((W-y)/(W/q));let i=emptyslot(side);if(i<0)return;e.range=y;e.i=i;e.w=W;
   entities[i]=e;channel.send(JSON.stringify(e));e=null;
 }
@@ -76,20 +76,15 @@ click.e=e;
 
 channel.onmessage=({data})=>{
 let e;try{e=JSON.parse(data);}catch{return;};
-if(e.hp<=0){entities[e.i]=undefined;return;}//desync-safeguard
+if(e.hp<=0){explode(e);entities[e.i]=undefined;return;}//desync-safeguard
 e.x=e.x/e.w*W;e.y=0;e.angle=PI;e.speed=-e.speed;
 entities[e.i]=e;//add
 };
 
-function emptyslot(side){
-let offset=side=="a"?0:max;
-let slice=entities.slice(offset,offset+max);
-let i=slice.indexOf(undefined);
-return i>=0?i+offset:-1;
-}
+function emptyslot(side){let offset=side=="a"?0:max;let slice=entities.slice(offset,offset+max);let i=slice.indexOf(undefined);return i>=0?i+offset:-1;}
 
-function explode(target){
-c.save();c.translate(target.x,target.y);c.fillStyle="gold";c.fill(shape([Array.from({length:40},()=>rnd(40)-20)],1,false));c.restore();
+function explode(e){
+c.save();c.translate(e.x,e.y);c.fillStyle="gold";c.fill(shape([Array.from({length:40},()=>rnd(40)-20)],1,false));c.restore();
 sound.explosion();
 }
 
@@ -102,9 +97,7 @@ return c.canvas;
 
 function speak(text){
 if(!window.speechSynthesis)return;
-let synth=window.speechSynthesis;
-let utter=new SpeechSynthesisUtterance(text);
-synth.speak(utter);
+let synth=window.speechSynthesis;let utter=new SpeechSynthesisUtterance(text);synth.speak(utter);
 }
 
 function gradient(c,a,type="radial",coords){
@@ -118,30 +111,16 @@ function shape(array,gridsize=20,mirror=true){let p=new Path2D;for(let i of arra
 function rnd(b,a=0){return floor(random()*(b-a))+a;}
 
 function Sound(){
-let auc=new AudioContext();
-let aubexplosion=noise(1);
+let auc=new AudioContext(),aubexplosion=noise(1);
 
-function noise(seconds){
-let b=auc.createBuffer(1,auc.sampleRate*seconds,auc.sampleRate);
-b.getChannelData(0).forEach((_,i,a)=>a[i]=random()*2-1);
-return b;
-}
+function noise(seconds){let b=auc.createBuffer(1,auc.sampleRate*seconds,auc.sampleRate);b.getChannelData(0).forEach((_,i,a)=>a[i]=random()*2-1);return b;}
 
 function explosion(){
-let s=auc.createBufferSource();
-s.buffer=aubexplosion;
-let gain=auc.createGain();gain.gain.value=3;
+let s=auc.createBufferSource();s.buffer=aubexplosion;
+let gain=auc.createGain();gain.gain.value=3;gain.gain.linearRampToValueAtTime(0,auc.currentTime+1);
 let filter=auc.createBiquadFilter();filter.type="lowpass";filter.frequency.value=300;
-gain.gain.linearRampToValueAtTime(0,auc.currentTime+1);
-s.connect(filter);
-filter.connect(gain);
-gain.connect(auc.destination);
-s.start(0,0,s.buffer.duration);
-s.onended=function(){
-  s.disconnect();
-  gain.disconnect();
-  filter.disconnect();
-};
+s.connect(filter);filter.connect(gain);gain.connect(auc.destination);s.start();
+s.onended=function(){s.disconnect();gain.disconnect();filter.disconnect();};
 }
 
 return {explosion};
