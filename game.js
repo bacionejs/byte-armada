@@ -44,10 +44,10 @@ for(let i=0;i<entities.length;i++){
 
 //destroy
 for(let i=0;i<entities.length;i++){
-  let p=entities[i];if(p===undefined)continue;
-  if(p.hp>0)continue;
-  explode(p);
-  channel.send(JSON.stringify(p));//desync safeguard
+  let e=entities[i];if(e===undefined)continue;
+  if(e.hp>0)continue;
+  explode(e);
+  channel.send(JSON.stringify(e));//desync safeguard
   entities[i]=undefined;
 }
 
@@ -168,7 +168,7 @@ s.onended=function(){
 }
 
 return {explosion};
-}//endsound
+}//sound
 
 
 }//game

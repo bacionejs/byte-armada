@@ -101,14 +101,14 @@ When a player creates a ship, their client sends the ship's initial parameters (
 
 ```javascript
 //in click event
-channel.send(JSON.stringify(p));
+channel.send(entity);
 ```
 
 The receiving client listens for messages and adds the new ship to its world.
 
 ```javascript
 //in channel.onmessage
-entities[p.i]=p;
+entities[entity.index]=entity;
 ```
 
 Initially, this was all I did. However, I noticed that the games would slowly fall out of sync. A ship might be destroyed on one player's screen but remain on the other's due to slight differences in timing.
@@ -117,9 +117,9 @@ The fix was simple: explicitly sync destruction events. When a ship's health dro
 
 ```javascript
 // In the update loop
-if(p.hp<=0)channel.send(JSON.stringify(p));
+if(entity.hp<=0)channel.send(entity);
 //in channel.onmessage
-if(p.hp<=0)entities[p.i]=undefined;
+if(entity.hp<=0)entities[entity.index]=undefined;
 ```
 
 ## Conclusion
