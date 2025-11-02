@@ -7,11 +7,11 @@
 A multiplayer space shooter game
 
 ---
-**Requirements**
+**Requirements**  
 Two Android Chrome phones on the same wifi
 
 ---
-**Start**
+**Start**  
 Click the intro screen and the scan each other's phone
 
 ---
