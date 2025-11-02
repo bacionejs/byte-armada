@@ -85,40 +85,13 @@ This worked in theory, but I hit two major technical roadblocks.
 
 A standard WebRTC SDP (Session Description Protocol) payload is huge, often over 1600 characters. This is far too much data to reliably encode in a barcode that can be scanned quickly by a phone camera.
 
-The solution was to strip the SDP down to its absolute essentials. I wrote a function that extracts only what's needed for a data channel connection:
-*   The type (`offer` or `answer`)
-*   Session ID
-*   ICE credentials (`ufrag` and `pwd`)
-*   The connection fingerprint
-*   A single network candidate
-
-This process compressed the 1600+ character string into a lean ~130 characters—a perfect fit for a barcode.
-
-```javascript
-// handshake.js - Simplified SDP stripping logic
-
-function SDP(s) {
-  if (s.includes("\n")) { // Strip down
-    const type = s.includes("a=setup:actpass") ? "offer" : "answer";
-    const sessionId = (s.match(/^o=- (\d+)/m) || [])[1];
-    const ufrag = (s.match(/^a=ice-ufrag:(.+)/m) || [])[1];
-    const pwd = (s.match(/^a=ice-pwd:(.+)/m) || [])[1];
-    const fp = (s.match(/^a=fingerprint:sha-256 (.+)/m) || [])[1];
-    const cand = (s.match(/^a=candidate:(.+)/m) || [])[1];
-    return [type, sessionId, ufrag, pwd, fp.replace(/:/g,""), cand].join("|");
-  } else { // Unstrip (rebuild)
-    // ... logic to reconstruct the full SDP from the piped string
-  }
-}
-```
+The solution was to strip the SDP boilerplate and then reconstruct it on the other end.
 
 #### Hurdle 2: The Barcode Generator
 
-JavaScript has a built-in barcode *reader*, but not a *generator*. I initially considered using a QR Code library, but even the smallest ones were around 10kB. That felt bloated for my lightweight game.
+JavaScript has a built-in barcode *reader*, but not a *generator*. I initially considered using QR Code, but the algorithm is 30k.
 
 After some research, I found that the **DataMatrix** format was much simpler than QR Code. It lacks complex features like masking patterns and multiple error-correction blocks. By writing a generator focused on a single encoding mode, I was able to create a fully functional DataMatrix generator in just **1kB of JavaScript**.
-
-This custom, minimal implementation kept the project lean and fast, without relying on external libraries for this core feature.
 
 ## Keeping the Game in Sync
 
