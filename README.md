@@ -103,14 +103,14 @@ The fix was simple: explicitly sync destruction events. When a ship's health dro
 
 ```javascript
 //in the update loop
-if(entity.hp<=0)channel.send(entity);
+if(entity.health<=0)channel.send(entity);
 ```
 
 The receiving client removes the ship.
 
 ```javascript
 //in channel.onmessage
-if(entity.hp<=0)entities[entity.index]=undefined;
+if(entity.health<=0)entities[entity.index]=undefined;
 ```
 
 ## Conclusion
