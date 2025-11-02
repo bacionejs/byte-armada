@@ -7,14 +7,6 @@
 a real-time-tactics space shooter game
 
 ---
-**Single player**  
-click intro  
-
----
-**Multi player**  
-long-press intro and scan each other's phone (Android Chrome on same wifi)  
-
----
 **Objective**  
 Get a ship to the opposite side.  
 
@@ -24,10 +16,6 @@ Click 3 times to create a ship (position, speed, range). Max 5 ships.
 With 5 zones for speed and range, there are **25 possible ship configurations**  
 higher speed = less health  
 higher range = less damage  
-
----
-**Optional**  
-Levels advance automatically, but you can select a level manually if it is too easy/hard.  
 
 ---
 
@@ -84,7 +72,7 @@ I was determined to stick to my "truly serverless" goal. If I couldn't use a web
 
 I devised a simple, face-to-face process to connect two players using their phone cameras.
 
-1. Both players long-press the game’s title screen to enter multiplayer mode.  
+1. Both players click the game’s title screen to start the handshake.  
 2. Each phone’s browser generates a WebRTC “offer” and displays it as a barcode.  
 3. Either player can start by scanning the other’s barcode using their phone camera.  
 4. The phone that scans first automatically becomes the “answerer.” It generates an “answer” and shows a *new* barcode on its screen.  
@@ -139,43 +127,15 @@ With the data channel open, the final piece of the puzzle was synchronizing the 
 When a player creates a ship, their client sends the ship's initial parameters (position, speed, range) to their opponent as a JSON message.
 
 ```javascript
-// game.js - Sending ship creation data
-
-function click({clientX:x, clientY:y}) {
-  // ... logic for setting ship position, speed, range
-  if (p.range) { // The final click that creates the ship
-    b.push(p);
-    if (channel) {
-      // Send the new ship's data to the other player
-      channel.send(JSON.stringify({
-        x: p.x,
-        w: W,
-        range: p.range,
-        speed: p.speed,
-        side: p.side = side,
-        id: p.id = blue.id++
-      }));
-    }
-    p = null;
-  }
-}
+//in click event
+channel.send(JSON.stringify(p));
 ```
 
 The receiving client listens for messages and adds the new ship to its world.
 
 ```javascript
-// game.js - Receiving ship creation data
-
-if (channel) {
-  channel.onmessage = ({ data }) => {
-    let parsed = JSON.parse(data);
-    // Add the opponent's ship to the game
-    red.entities.push(entity(
-      parsed.x / parsed.w * W, // Scale position to local screen size
-      0, PI, -parsed.speed, parsed.range, parsed.side, parsed.id
-    ));
-  };
-}
+//in channel.onmessage
+entities[p.i]=p;
 ```
 
 Initially, this was all I did. However, I noticed that the games would slowly fall out of sync. A ship might be destroyed on one player's screen but remain on the other's due to slight differences in timing.
@@ -183,17 +143,10 @@ Initially, this was all I did. However, I noticed that the games would slowly fa
 The fix was simple: explicitly sync destruction events. When a ship's health drops to zero, the client sends a "delete" message containing that ship's unique ID. This ensures both players remove the same ship at the same time, keeping the simulation perfectly synchronized.
 
 ```javascript
-// game.js - Desync safeguard
-
-// In the update loop...
-if (channel) {
-  i.entities.forEach(e => {
-    if (e.hp <= 0) {
-      // Tell the other peer to delete this entity
-      channel.send(JSON.stringify({...e, delete: true}));
-    }
-  });
-}
+// In the update loop
+if(p.hp<=0)channel.send(JSON.stringify(p));
+//in channel.onmessage
+if(p.hp<=0)entities[p.i]=undefined;
 ```
 
 ## Conclusion
