@@ -67,7 +67,7 @@ if(!e){
   msg.style.color="yellow";msg.textContent="Click vertically to select range (far is weak)";
   y=ceil((W-y)/(W/q));e.speed=-y;e.hp=q/abs(y);
 }else{
-  msg.style.color="lime";msg.textContent="Click horizontally to select position";
+  msg.style.color="lime";  msg.textContent="Click horizontally to select position";
   y=ceil((W-y)/(W/q));let i=emptyslot(side);if(i<0)return;e.range=y;e.i=i;e.w=W;
   entities[i]=e;channel.send(JSON.stringify(e));e=null;
 }
