@@ -140,7 +140,7 @@ entities[p.i]=p;
 
 Initially, this was all I did. However, I noticed that the games would slowly fall out of sync. A ship might be destroyed on one player's screen but remain on the other's due to slight differences in timing.
 
-The fix was simple: explicitly sync destruction events. When a ship's health drops to zero, the client sends a "delete" message containing that ship's unique ID. This ensures both players remove the same ship at the same time, keeping the simulation perfectly synchronized.
+The fix was simple: explicitly sync destruction events. When a ship's health drops to zero, the client sends that info to the other client. This ensures both players remove the same ship at the same time, keeping the simulation perfectly synchronized.
 
 ```javascript
 // In the update loop
