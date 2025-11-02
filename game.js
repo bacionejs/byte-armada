@@ -35,24 +35,16 @@ for(let i=0;i<entities.length;i++){
 }
 //draw
 for(let i=0;i<entities.length;i++){
-  let e=entities[i];
-  if(!e)continue;
-  c.save();c.translate(e.x,e.y);c.rotate(e.angle);
-  let s=W/100*e.hp+5;
-  c.scale(s,s);c.lineWidth=1/s;
-  c.strokeStyle=i<max?blue.hull:red.hull;
-  c.stroke(i<max?blue.shape:red.shape);
-  c.restore();
+  let e=entities[i];if(!e)continue;
+  c.save();c.translate(e.x,e.y);c.rotate(e.angle);let s=W/100*e.hp+5;c.scale(s,s);c.lineWidth=1/s;c.strokeStyle=i<max?blue.hull:red.hull;c.stroke(i<max?blue.shape:red.shape);c.restore();
 }
 //shoot
 let teams=[{attackers:[0,max],defenders:[max,max*2]},{attackers:[max,max*2],defenders:[0,max]}];
 for(let t=0;t<teams.length;t++){
   let attackers=teams[t].attackers,defenders=teams[t].defenders;
   for(let i=attackers[0];i<attackers[1];i++){
-    let a=entities[i];
-    if(!a)continue;
-    if(a.cooldown>0){a.cooldown--;continue;}
-    a.cooldown=cooldown;
+    let a=entities[i];if(!a)continue;
+    if(a.cooldown>0){a.cooldown--;continue;}a.cooldown=cooldown;
     let target=null,best=Infinity,maxRange=(a.range*(W/q))**2;
     for(let j=defenders[0];j<defenders[1];j++){
       let d=entities[j];if(!d)continue;
@@ -60,10 +52,8 @@ for(let t=0;t<teams.length;t++){
       if(dist<=maxRange&&dist<best){target=d;best=dist;}
     }
     if(!target)continue;
-    target.hp-=1/a.range;
-    a.angle=atan2(target.y-a.y,target.x-a.x)+PI/2;
-    c.strokeStyle="lime";c.lineWidth=1;
-    c.beginPath();c.moveTo(a.x,a.y);c.lineTo(target.x,target.y);c.stroke();
+    target.hp-=1/a.range;a.angle=atan2(target.y-a.y,target.x-a.x)+PI/2;
+    c.strokeStyle="lime";c.lineWidth=1;c.beginPath();c.moveTo(a.x,a.y);c.lineTo(target.x,target.y);c.stroke();
   }
 }
 }//update
