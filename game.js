@@ -5,8 +5,7 @@ let {floor,ceil,random,PI,abs,atan2,min}=Math;
 let W=min(innerWidth,innerHeight),FPS=30,q=5,buckettime=20,cooldown=FPS,max=5,timers=[],scale=((W/q)/(FPS*buckettime));
 let can=element("canvas"),c=can.getContext("2d");can.width=can.height=W;can.addEventListener("pointerdown",click);
 let msg=element("div");
-let entities;
-let sound=Sound();
+let entities,sound=Sound();
 
 let blue={
   hull:gradient(c,[[0,"white"],[.08,"skyblue"],[.4,"blue"],[.6,"white"]]),
@@ -27,15 +26,13 @@ timers.push(setInterval(update,1000/FPS));
 
 function update(){
 c.clearRect(0,0,W,W);c.drawImage(background,0,0);
-for(let i=0;i<entities.length;i++){
-  let e=entities[i];if(!e)continue;
+for(let i=0;i<entities.length;i++){let e=entities[i];if(!e)continue;
   e.y+=e.speed*scale;//move
   if(e.y<=0||e.y>=W){if((i<max&&side=="a")||(i>=max&&side=="b"))speak("you win");reset();return;}//win
   if(e.hp<=0){explode(e);channel.send(JSON.stringify(e));entities[i]=undefined;}//destroy
 }
 //draw
-for(let i=0;i<entities.length;i++){
-  let e=entities[i];if(!e)continue;
+for(let i=0;i<entities.length;i++){let e=entities[i];if(!e)continue;
   c.save();c.translate(e.x,e.y);c.rotate(e.angle);let s=W/100*e.hp+5;c.scale(s,s);c.lineWidth=1/s;c.strokeStyle=i<max?blue.hull:red.hull;c.stroke(i<max?blue.shape:red.shape);c.restore();
 }
 //shoot
@@ -95,10 +92,7 @@ for(let i=0;i<=q;i++){let y=floor((i/q)*W);c.beginPath();c.moveTo(0,y);c.lineTo(
 return c.canvas;
 })();
 
-function speak(text){
-if(!window.speechSynthesis)return;
-let synth=window.speechSynthesis;let utter=new SpeechSynthesisUtterance(text);synth.speak(utter);
-}
+function speak(text){let synth=window.speechSynthesis;let utter=new SpeechSynthesisUtterance(text);synth.speak(utter);}
 
 function gradient(c,a,type="radial",coords){
 let g=type==="linear"?c.createLinearGradient(...(coords||[0,W,0,W-50])):c.createRadialGradient(...(coords||[0,0,0,0,0,1]));
