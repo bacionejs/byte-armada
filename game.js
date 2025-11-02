@@ -27,40 +27,23 @@ timers.push(setInterval(update,1000/FPS));
 
 function update(){
 c.clearRect(0,0,W,W);c.drawImage(background,0,0);
-
-//move
 for(let i=0;i<entities.length;i++){
-  let e=entities[i];if(e===undefined)continue;
-  e.y+=(e.speed*scale);
+  let e=entities[i];if(!e)continue;
+  e.y+=e.speed*scale;//move
+  if(e.y<=0||e.y>=W){if((i<max&&side=="a")||(i>=max&&side=="b"))speak("you win");reset();return;}//win
+  if(e.hp<=0){explode(e);channel.send(JSON.stringify(e));entities[i]=undefined;}//destroy
 }
-
-//win
-for(let i=0;i<entities.length;i++){
-  let e=entities[i];if(e===undefined)continue;
-  if(e.y>0&&e.y<W)continue;
-  if((i<max&&side=="a")||(i>=max&&side=="b"))speak("you win");
-  reset();
-}
-
-//destroy
-for(let i=0;i<entities.length;i++){
-  let e=entities[i];if(e===undefined)continue;
-  if(e.hp>0)continue;
-  explode(e);
-  channel.send(JSON.stringify(e));//desync safeguard
-  entities[i]=undefined;
-}
-
 //draw
 for(let i=0;i<entities.length;i++){
-  let e=entities[i];if(e===undefined)continue;
+  let e=entities[i];
+  if(!e)continue;
   c.save();c.translate(e.x,e.y);c.rotate(e.angle);
-  let s=W/100*e.hp+5;c.scale(s,s);c.lineWidth=1/s;
-  if(i<max){c.strokeStyle=blue.hull;c.stroke(blue.shape);}
-  else{c.strokeStyle=red.hull;c.stroke(red.shape);}
+  let s=W/100*e.hp+5;
+  c.scale(s,s);c.lineWidth=1/s;
+  c.strokeStyle=i<max?blue.hull:red.hull;
+  c.stroke(i<max?blue.shape:red.shape);
   c.restore();
 }
-
 //shoot
 let teams=[{attackers:[0,max],defenders:[max,max*2]},{attackers:[max,max*2],defenders:[0,max]}];
 for(let t=0;t<teams.length;t++){
@@ -68,19 +51,21 @@ for(let t=0;t<teams.length;t++){
   for(let i=attackers[0];i<attackers[1];i++){
     let a=entities[i];
     if(!a)continue;
-    if(a.cooldown>0){a.cooldown--;continue;}a.cooldown=cooldown;
-    let target=null,best=Infinity,max=(a.range*(W/q))**2;
+    if(a.cooldown>0){a.cooldown--;continue;}
+    a.cooldown=cooldown;
+    let target=null,best=Infinity,maxRange=(a.range*(W/q))**2;
     for(let j=defenders[0];j<defenders[1];j++){
       let d=entities[j];if(!d)continue;
       let dx=d.x-a.x,dy=d.y-a.y,dist=dx*dx+dy*dy;
-      if(dist<=max&&dist<best){target=d;best=dist;}
+      if(dist<=maxRange&&dist<best){target=d;best=dist;}
     }
     if(!target)continue;
-    target.hp-=1/a.range;a.angle=atan2(target.y-a.y,target.x-a.x)+PI/2;
-    c.strokeStyle="lime";c.lineWidth=1;c.beginPath();c.moveTo(a.x,a.y);c.lineTo(target.x,target.y);c.stroke();
+    target.hp-=1/a.range;
+    a.angle=atan2(target.y-a.y,target.x-a.x)+PI/2;
+    c.strokeStyle="lime";c.lineWidth=1;
+    c.beginPath();c.moveTo(a.x,a.y);c.lineTo(target.x,target.y);c.stroke();
   }
 }
-
 }//update
 
 function click({clientX:x,clientY:y}){
@@ -92,7 +77,7 @@ if(!e){
   msg.style.color="yellow";msg.textContent="Click vertically to select range (far is weak)";
   y=ceil((W-y)/(W/q));e.speed=-y;e.hp=q/abs(y);
 }else{
-  msg.style.color="lime";  msg.textContent="Click horizontally to select position";
+  msg.style.color="lime";msg.textContent="Click horizontally to select position";
   y=ceil((W-y)/(W/q));let i=emptyslot(side);if(i<0)return;e.range=y;e.i=i;e.w=W;
   entities[i]=e;channel.send(JSON.stringify(e));e=null;
 }
@@ -101,7 +86,7 @@ click.e=e;
 
 channel.onmessage=({data})=>{
 let e;try{e=JSON.parse(data);}catch{return;};
-if(e.hp<=0){entities[e.i]=undefined;return;}//desync safeguard
+if(e.hp<=0){entities[e.i]=undefined;return;}//desync-safeguard
 e.x=e.x/e.w*W;e.y=0;e.angle=PI;e.speed=-e.speed;
 entities[e.i]=e;//add
 };
