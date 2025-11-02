@@ -5,7 +5,7 @@ let {floor,ceil,random,PI,abs,atan2,min}=Math;
 let W=min(innerWidth,innerHeight),FPS=30,q=5,buckettime=20,cooldown=FPS,max=5,timers=[],scale=((W/q)/(FPS*buckettime));
 let can=element("canvas"),c=can.getContext("2d");can.width=can.height=W;can.addEventListener("pointerdown",click);
 let msg=element("div");
-let entities=new Array(max*2).fill(undefined);
+let entities;
 let sound=Sound();
 
 let blue={
@@ -100,10 +100,10 @@ click.e=e;
 }
 
 channel.onmessage=({data})=>{
-let p;try{p=JSON.parse(data);}catch{return;};
-if(p.hp<=0){entities[p.i]=undefined;return;}//desync safeguard
-p.x=p.x/p.w*W;p.y=0;p.angle=PI;p.speed=-p.speed;
-entities[p.i]=p;//add
+let e;try{e=JSON.parse(data);}catch{return;};
+if(e.hp<=0){entities[e.i]=undefined;return;}//desync safeguard
+e.x=e.x/e.w*W;e.y=0;e.angle=PI;e.speed=-e.speed;
+entities[e.i]=e;//add
 };
 
 function emptyslot(side){
