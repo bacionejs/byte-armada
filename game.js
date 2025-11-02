@@ -2,7 +2,7 @@ function game(channel,side){
 element("style").textContent="*{margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;}";
 document.body.style.background="black";
 let {floor,ceil,random,PI,abs,atan2,min}=Math;
-let W=min(innerWidth,innerHeight),FPS=30,q=5,buckettime=20,cooldown=FPS,max=5,timers=[],scale=((W/q)/(FPS*buckettime));
+let W=min(innerWidth,innerHeight),FPS=30,q=5,buckettime=10,cooldown=FPS,max=5,timers=[],scale=((W/q)/(FPS*buckettime));
 let can=element("canvas"),c=can.getContext("2d");can.width=can.height=W;can.addEventListener("pointerdown",click);
 let msg=element("div"),entities,sound=Sound();
 
