@@ -4,8 +4,7 @@ document.body.style.background="black";
 let {floor,ceil,random,PI,abs,atan2,min}=Math;
 let W=min(innerWidth,innerHeight),FPS=30,q=5,buckettime=20,cooldown=FPS,max=5,timers=[],scale=((W/q)/(FPS*buckettime));
 let can=element("canvas"),c=can.getContext("2d");can.width=can.height=W;can.addEventListener("pointerdown",click);
-let msg=element("div");
-let entities,sound=Sound();
+let msg=element("div"),entities,sound=Sound();
 
 let blue={
   hull:gradient(c,[[0,"white"],[.08,"skyblue"],[.4,"blue"],[.6,"white"]]),
