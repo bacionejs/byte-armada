@@ -4,11 +4,15 @@
 
 ---
 **Byte Armada**  
-a real-time-tactics space shooter game
+A multiplayer space shooter game
 
 ---
-**Objective**  
-Get a ship to the opposite side.  
+**Requirements**
+Two Android Chrome phones on the same wifi
+
+---
+**Start**
+Click the intro screen and the scan each other's phone
 
 ---
 **Controls**  
@@ -18,30 +22,12 @@ higher speed = less health
 higher range = less damage  
 
 ---
-
-# 📚 Post-Mortem
-
-## 💡 Purpose
-
-To create a real-time-tactics space shooter that emphasizes strategic decision-making while keeping the **user interface minimal and uncluttered**.  
-
-## 🎨 Art
-
-I created [Vector Bay](//github.com/bacionejs/vectorbay) for building spaceships.
-
-## 📷 Barcode Handshake
-
-To support multiplayer without a server, exchange a WebRTC SDP handshake with a phone barcode, face-to-face, with both players on the same wifi. A stripped SDP is 130 characters (1600 raw), too long to type, but a perfect fit for a barcode handshake.
-
-JavaScript has a built-in barcode *reader*, but not a *generator*. For the generator, I originally considered `QR Code`, but even with a fixed version and error level, the logic is still 10k. This is due to complex features like multiple placement patterns, masking with scoring and selection, and interleaving data across multiple blocks with separate error correction. `DataMatrix` has a much simpler structure: fixed placement, no masking, and a single block. And by using only a single encoding mode the algorithm is reduced to 1k.
-
-Feel free to use `handshake.js` without attribution. And as you can see, `game.js` only needed a few lines to support multiplayer (search for "channel"); merely sharing creation data almost gives a complete solution but it gradually gets out of sync but by sharing destruction data too, it seems that everything works. This approach won't work for complex games...but good luck, and I hope to see your game someday. 🥳
-
-
-
+**Objective**  
+Get a ship to the opposite side.  
 
 ---
 
+# 📚 Post-Mortem
 # How I Built a Serverless Multiplayer Game with WebRTC and Barcodes
 
 I've always been fascinated by the idea of creating a purely peer-to-peer multiplayer game that runs in the browser. No servers to maintain, no hosting costs, no user accounts—just two people, two phones, and an instant gameplay session. This idea led me to create **Byte Armada**, a real-time tactical space shooter with a unique, serverless multiplayer experience.
@@ -97,10 +83,10 @@ After some research, I found that the **DataMatrix** format was much simpler tha
 
 With the data channel open, the final piece of the puzzle was synchronizing the game state. For a simple game like Byte Armada, a complex state-syncing model isn't necessary. I opted for a simple event-based approach.
 
-When a player creates a ship, their client sends the ship's initial parameters (position, speed, range) to their opponent as a JSON message.
+When a player creates a ship, their client sends the ship's initial parameters (position, speed, range) to their opponent.
 
 ```javascript
-//in click event
+//in the click event
 channel.send(entity);
 ```
 
@@ -116,8 +102,10 @@ Initially, this was all I did. However, I noticed that the games would slowly fa
 The fix was simple: explicitly sync destruction events. When a ship's health drops to zero, the client sends that info to the other client. This ensures both players remove the same ship at the same time, keeping the simulation perfectly synchronized.
 
 ```javascript
-// In the update loop
+//in the update loop
 if(entity.hp<=0)channel.send(entity);
+```
+```javascript
 //in channel.onmessage
 if(entity.hp<=0)entities[entity.index]=undefined;
 ```
@@ -128,4 +116,4 @@ Building Byte Armada was a fantastic journey. It taught me that WebRTC is an inc
 
 This barcode handshake approach won't work for every game, but it's a perfect fit for local multiplayer and a great example of how we can use the physical world to solve digital problems. I hope this inspires you to think outside the box for your next project.
 
-You can **[play Byte Armada here](https://bacionejs.github.io/byte-armada/)**. Grab a friend and try out the multiplayer mode for yourself
+You can **[play Byte Armada here](https://bacionejs.github.io/byte-armada/)**. Grab a friend and try it out.
