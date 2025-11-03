@@ -7,14 +7,6 @@
 A multiplayer space shooter game
 
 ---
-**Requirements**  
-Two Android Chrome phones on the same wifi
-
----
-**Start**  
-Click the intro screen and the scan each other's phone
-
----
 **Controls**  
 Click 3 times to create a ship (position, speed, range). Max 5 ships.  
 With 5 zones for speed and range, there are **25 possible ship configurations**  
