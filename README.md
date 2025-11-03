@@ -4,8 +4,8 @@
 
 ---
 **Byte Armada**  
-A multiplayer space shooter game
-Requires two Android Chrome phones on the same wifi
+A multiplayer space shooter game  
+Requires two Android Chrome phones on the same wifi  
 
 ---
 **Controls**  
