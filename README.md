@@ -26,7 +26,7 @@ I've always been fascinated by the idea of creating a purely peer-to-peer multip
 
 Here's a look at the game in action:
 
-![Byte Armada Gameplay](README.jpg)
+<a href="https://bacionejs.github.io/byte-armada/" target="_blank"> <img src="README.jpg" width="33%" /> </a>
 
 The goal was to build a game that was not only fun but also technically interesting. I wanted players to connect face-to-face, on the same Wi-Fi, and jump right into a match. The technology that makes this possible is **WebRTC**, but I had to get creative to solve its biggest hurdle: the initial handshake.
 
