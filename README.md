@@ -110,6 +110,6 @@ if(entity.health<=0)entities[entity.index]=undefined;
 
 Building Byte Armada was a fantastic journey. It taught me that WebRTC is an incredibly powerful tool for more than just video conferencing. By thinking creatively about the signaling phase, I was able to achieve my goal of a truly serverless multiplayer game that fosters a fun, face-to-face connection.
 
-This barcode handshake approach won't work for every game, but it's a perfect fit for local multiplayer and a great example of how we can use the physical world to solve digital problems. I hope this inspires you to think outside the box for your next project.
+It is a perfect fit for local multiplayer and a great example of how we can use the physical world to solve digital problems. I hope this inspires you to think outside the box for your next project.
 
 You can **[play Byte Armada here](https://bacionejs.github.io/byte-armada/)**. Grab a friend and try it out.
