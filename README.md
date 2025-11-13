@@ -3,8 +3,7 @@
 <a href="https://bacionejs.github.io/byte-armada/" target="_blank"> <img src="README.jpg" width="33%" /> </a>
 
 ---
-**Byte Armada**  
-A multiplayer space shooter game  
+Byte Armada: a serverless multiplayer space shooter game using WebRTC and barcodes
 Requires two Android Chrome phones on the same wifi  
 
 ---
