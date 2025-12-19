@@ -4,7 +4,7 @@
 
 To open, click ↴  
 
-<a href="//bacionejs.github.io/byte-armada/byte-armada.html" target="_blank"> <img src="https://repository-images.githubusercontent.com/1010433999/37f39bea-b362-4dbb-99c4-91c9e640bdad" width="20%" /> </a>
+<a href="//bacionejs.github.io/byte-armada/byte-armada.html" target="_blank"> <img src="https://repository-images.githubusercontent.com/1010433999/7f0db4a0-50e3-4ba6-8cf1-31e67df5d6d9" width="20%" /> </a>
 
 
 ---
