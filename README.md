@@ -3,6 +3,7 @@
 <details><summary>About</summary>
 
 Byte Armada is a serverless multiplayer space shooter game using WebRTC and barcodes, for size-constrained games.  
+
 To open, click the thumbnail, or download and run from your file manager.
 
 </details><details><summary>Features</summary>
