@@ -1,19 +1,12 @@
+<a href="//bacionejs.github.io/byte-armada/byte-armada.html" target="_blank"> <img src="https://repository-images.githubusercontent.com/1010433999/606308e1-6707-492e-90ef-91831bcb8707" width="80%" /></a>
 
+<details><summary>About</summary>
 
----
+- **What**: Byte Armada is a serverless multiplayer space shooter game using WebRTC and barcodes 
+- **Why**: For size-constrained games
+- **How**: To open, click the thumbnail, or download and run from your file manager.
 
-To open, click ↴  
-
-<a href="//bacionejs.github.io/byte-armada/byte-armada.html" target="_blank"> <img src="https://repository-images.githubusercontent.com/1010433999/7f0db4a0-50e3-4ba6-8cf1-31e67df5d6d9" width="20%" /> </a>
-
-
----
-
-Byte Armada is a serverless multiplayer space shooter game using WebRTC and barcodes  
-
----
-
-<details><summary>Notes</summary>
+</details><details><summary>Features</summary>
 
 Syncronization
 - channel.send(entity);
@@ -28,7 +21,4 @@ Handshake (camera/barcodes)
 - same wifi
 
 </details>
-
----
-
 
