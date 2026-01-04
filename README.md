@@ -8,17 +8,9 @@
 
 </details><details><summary>Features</summary>
 
-Syncronization
-- channel.send(entity);
-- entities[entity.index]=entity;
-- if(entity.health<=0)channel.send(entity);
-- if(entity.health<=0)entities[entity.index]=undefined;
-
-Handshake (camera/barcodes)
-- stripped WebRTC SDP
-- stripped datamatrix algorithm
-- no stun/turn
-- same wifi
+- event-based syncronization
+- stripped SDP/datamatrix
+- no stun/turn servers, same wifi
 
 </details>
 
